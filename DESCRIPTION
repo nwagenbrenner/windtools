@@ -11,5 +11,3 @@ Imports: circular, ggmap, grid, lattice, metvurst, raster, rgdal, RgoogleMaps
 Suggests:
     testthat,
     roxygen2
-Collate:
-    'windtools-package.r'
