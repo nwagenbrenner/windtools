@@ -131,6 +131,7 @@ subsetOnHour <- function(df, h1, h2, h3, h4){
 #=======================================================
 makeVectorMap <- function(df, lat, lon, zoom, maptype){
     stopifnot(require("ggmap"))
+    stopifnot(require("grid"))
     myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
     #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
     #line segements centered on sensor location
