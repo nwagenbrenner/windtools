@@ -1,11 +1,3 @@
-library(lattice)
-library(raster)
-library(rgdal)
-library(ggmap)
-library(RgoogleMaps)
-library(grid)
-library(circular)
-
 #=======================================================
 # convert speed to u,v
 #=======================================================
