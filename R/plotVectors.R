@@ -1,5 +1,6 @@
 stopifnot(require("lattice"))
 stopifnot(require("circular"))
+stopifnot(require("ggplot2"))
 stopifnot(require("grid"))
 stopifnot(require("ggmap"))
 stopifnot(require("RgoogleMaps"))
