@@ -1,3 +1,9 @@
+stopifnot(require("lattice"))
+stopifnot(require("circular"))
+stopifnot(require("grid"))
+stopifnot(require("ggmap"))
+stopifnot(require("RgoogleMaps"))
+
 #=======================================================
 # convert speed to u,v
 #=======================================================
