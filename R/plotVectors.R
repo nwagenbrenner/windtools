@@ -1,10 +1,3 @@
-stopifnot(require("lattice"))
-stopifnot(require("circular"))
-stopifnot(require("ggplot2"))
-stopifnot(require("grid"))
-stopifnot(require("ggmap"))
-stopifnot(require("RgoogleMaps"))
-
 #=======================================================
 # convert speed to u,v
 #=======================================================
@@ -30,6 +23,7 @@ readData <- function(fileName){
 #     plot speed time series for a single sensor
 #=======================================================
 plotSensorSpeed <- function(df, sensor){
+    stopifnot(require("ggplot2"))
     df<-subset(df, subset=(plot == sensor))
     df[,"datetime"] <- as.character(df[,"datetime"])
     df[,"datetime"] <- as.POSIXct(strptime(df[,"datetime"], '%Y-%m-%d %H:%M:%S'))
@@ -78,6 +72,8 @@ subsetOnSpeed <- function(df, sensor, condition, threshold){
 #  Build df with hourly avg speeds
 #============================================================
 buildHourlyAverages <- function(df){
+    stopifnot(require("circular"))
+
     obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
     df <- cbind(df, obs_dir_radians)
 
@@ -134,6 +130,7 @@ subsetOnHour <- function(df, h1, h2, h3, h4){
 #    vector field
 #=======================================================
 makeVectorMap <- function(df, lat, lon, zoom, maptype){
+    stopifnot(require("ggmap"))
     myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
     #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
     #line segements centered on sensor location
