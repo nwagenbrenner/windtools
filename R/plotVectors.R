@@ -118,11 +118,9 @@ buildHourlyAverages <- function(df){
 #======================================================
 #   subset the averaged hourly ds on hours
 #======================================================
-subsetOnHour <- function(df, h1, h2, h3, h4){
-    subHrSpeed<-subset(df, subset=(hour == h1 |
-                                    hour == h2 |
-                                    hour == h3 |
-                                    hour == h4))
+subsetOnHour <- function(df, h){
+    # h is a vector of hours
+    subHrSpeed<-subset(df, subset=(hour %in% h))
     return(subHrSpeed)
 }
                           
