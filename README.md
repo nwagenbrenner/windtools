@@ -3,8 +3,8 @@ windtools
 
 Tools for processing and visualizing wind data in R
 
-Install with devtools:
+Install with `devtools`:
 
-install_github('windtools', 'nwagenbrenner')
+`install_github('windtools', 'nwagenbrenner')`
 
-library(windtools)
+`library(windtools)`
