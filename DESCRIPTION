@@ -4,7 +4,24 @@ Author: Natalie Wagenbrenner
 Version: 0.1
 License: GPL-3
 Title: Tools to process and visualize wind data
-Description: Aggregate, subset, sort, and create vector plots of wind data.  
-Depends: R (>= 3.0.0)
-Suggests: abind, testthat (>= 0.2), tcltk, foreach
-Imports: circular, ggmap, ggplot2, grid, lattice, raster, rgdal, RgoogleMaps
+Description: Aggregate, subset, sort, and create vector plots of wind data.
+Depends:
+    R (>= 3.0.0)
+Suggests:
+    abind,
+    testthat (>= 0.2),
+    tcltk,
+    foreach
+Imports:
+    circular,
+    ggmap,
+    ggplot2,
+    grid,
+    lattice,
+    raster,
+    rgdal,
+    RgoogleMaps,
+    RSQLite
+Collate:
+    'plotVectors.R'
+    'db.R'
