@@ -1,0 +1,30 @@
+\name{subsetOnHour}
+\alias{subsetOnHour}
+\title{Subset an averaged hourly dataframe by hour}
+\usage{
+  subsetOnHour(df, h)
+}
+\arguments{
+  \item{df}{dataframe}
+
+  \item{h}{vector of hours}
+}
+\value{
+  subsetted dataframe with requested hours
+}
+\description{
+  \code{subsetOnHour} returns subsetted dataframe with
+  requested hours
+}
+\details{
+  This fucntion returns a subsetted dataframe with specific
+  hours from an hourly averaged dataframe.
+}
+\examples{
+data(wind)
+s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+s.avg <- buildHourlyAverages(s)
+h <- c(0, 6, 12, 18)
+s.hr <- subsetOnHour(s.avg, h)
+}
+

@@ -46,15 +46,42 @@ speed2v<-function(s,d){
 #=======================================================
 #     build initial df from file
 #=======================================================
+#' @title Read wind data
+#' @description
+#' \code{readData} reads wind data into a dataframe
+#' @param fileName full path to wind data file to be read in
+#' @return dataframe for use by other windtools functions
+#' @export
+#' @details
+#' This fucntion reads in a file containing wind data. The input
+#' file must contain the following data in this order: 
+#' 'identifier', 'lat', 'lon', 'datetime', 'obs_speed', obs_dir'
+
 readData <- function(fileName){
     speed<-as.data.frame(read.table(fileName, sep=",", header=TRUE, as.is=TRUE))
     colnames(speed)<-c("plot", "lat", "lon", "datetime", "obs_speed", "obs_dir")
     speed[,"datetime"] <- as.POSIXct(strptime(speed[,"datetime"], '%Y-%b-%d %H:%M:%S'))
     return(speed)
 }
+
 #=======================================================
 #     plot speed time series for a single sensor
 #=======================================================
+#' @title Plot wind speed as a time series 
+#' @description
+#' \code{plotSensorSpeed} returns speed time series as a ggplot2 object 
+#' @param df dataframe
+#' @param sensor name of sensor ('plot')
+#' @return ggplot2 object
+#' @export
+#' @details
+#' This fucntion creates a ggplot2 object of wind speed
+#' vs. time for a single sensor.
+#'
+#' @examples
+#' data(wind)
+#' plotSensorSpeed(wind, 'R26')
+
 plotSensorSpeed <- function(df, sensor){
     stopifnot(require("ggplot2"))
     df<-subset(df, subset=(plot == sensor))
@@ -78,6 +105,24 @@ plotSensorSpeed <- function(df, sensor){
 #=======================================================
 #     subset on speed criteria
 #=======================================================
+#' @title Subset wind data on speed criteria 
+#' @description
+#' \code{subsetOnSpeed} returns subsetted dataframe 
+#' @param df dataframe
+#' @param sensor name of sensor ('plot')
+#' @param condition '<' or '>'
+#' @param threshold threshold speed to subset on
+#' @return subsetted dataframe
+#' @export
+#' @details
+#' This fucntion subsets the wind data frame based on
+#' speed criteria for a single sensor.
+#'
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+
+
 subsetOnSpeed <- function(df, sensor, condition, threshold){
     if(condition == '>'){
         s<-subset(df, subset=(plot == sensor & obs_speed > threshold))
@@ -104,6 +149,26 @@ subsetOnSpeed <- function(df, sensor, condition, threshold){
 #============================================================
 #  Build df with hourly avg speeds
 #============================================================
+#' @title Build a dataframe with hourly averaged data 
+#' @description
+#' \code{buildHourlyAverages} returns dataframe with hourly averaged data 
+#' @param df dataframe
+#' @return dataframe with hourly averages
+#' @export
+#' @details
+#' This fucntion returns a dataframe with hourly averages of wind data.
+#' Data are averaged over all timesteps to produce hourly averages for 
+#' each hour of the day. This is useful to see, for example, what the 
+#' typcial wind field looks like at 1000 LT. It may be most usefule to
+#' call this function after other subsetting operations have been done.
+#' For example, you may want to first subset on speed to filter out
+#' high-wind event cases to examine diurnal wind patterns.
+#'
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+#' s.avg <- buildHourlyAverages(s)
+
 buildHourlyAverages <- function(df){
     stopifnot(require("circular"))
 
@@ -151,8 +216,24 @@ buildHourlyAverages <- function(df){
 #======================================================
 #   subset the averaged hourly ds on hours
 #======================================================
+#' @title Subset an averaged hourly dataframe by hour
+#' @description
+#' \code{subsetOnHour} returns subsetted dataframe with requested hours 
+#' @param df dataframe
+#' @param h vector of hours
+#' @return subsetted dataframe with requested hours
+#' @export
+#' @details
+#' This fucntion returns a subsetted dataframe with specific hours 
+#' from an hourly averaged dataframe.
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+#' s.avg <- buildHourlyAverages(s)
+#' h <- c(0, 6, 12, 18)
+#' s.hr <- subsetOnHour(s.avg, h)
+
 subsetOnHour <- function(df, h){
-    # h is a vector of hours
     subHrSpeed<-subset(df, subset=(hour %in% h))
     return(subHrSpeed)
 }
@@ -160,6 +241,29 @@ subsetOnHour <- function(df, h){
 #=======================================================
 #    vector field
 #=======================================================
+#' @title Make a vector map of the wind field
+#' @description
+#' \code{makeVectorMap} returns a ggmap object of the vector field 
+#' @param df dataframe
+#' @param lat center lat of Google Maps image
+#' @param lon center lon of Google Maps image
+#' @param zoom zoom for Google Maps image (1-20)
+#' @param maptype type of Google Maps image (terrain, hybrid, satellite, roadmap)
+#' @return ggmap object representation of the wind field
+#' @export
+#' @details
+#' This fucntion returns a vector plot of the wind field overlayed on 
+#' a static Google Maps image. If multiple hours are supplied, the plot
+#' is faceted on the hour. Note that if more than 4-6 hours are requested
+#' this can take some time.
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+#' s.avg <- buildHourlyAverages(s)
+#' h <- c(0, 6, 12, 18)
+#' s.hr <- subsetOnHour(s.avg, h)
+#' m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
+
 makeVectorMap <- function(df, lat, lon, zoom, maptype){
     stopifnot(require("ggmap"))
     stopifnot(require("grid"))
