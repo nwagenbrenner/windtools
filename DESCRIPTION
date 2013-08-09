@@ -21,7 +21,9 @@ Imports:
     raster,
     rgdal,
     RgoogleMaps,
-    RSQLite
+    RSQLite,
+    plotKML
 Collate:
     'plotVectors.R'
     'db.R'
+    'kml.R'

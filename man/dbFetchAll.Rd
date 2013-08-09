@@ -1,6 +1,6 @@
 \name{dbFetchAll}
 \alias{dbFetchAll}
-\title{Fetch all data from a database}
+\title{Fetch all data from a database for specified time period}
 \usage{
   dbFetchAll(dbDrv, db, start_time, end_time)
 }
@@ -19,10 +19,12 @@
   quality
 }
 \description{
-  \code{dbFetchAll} returns a dataframe of wind data
+  \code{dbFetchAll} returns a dataframe of wind data for
+  specified time period
 }
 \details{
-  This fucntion returns a dataframe of raw, 30-s wind data.
-  Currently only connects to SQLite db.
+  This fucntion returns a dataframe of raw, 30-s wind data
+  for a specified time period. Currently only connects to
+  SQLite db.
 }
 
