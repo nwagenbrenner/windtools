@@ -24,6 +24,9 @@ Imports:
     RSQLite,
     plotKML
 Collate:
-    'plotVectors.R'
     'db.R'
     'kml.R'
+    'convert.R'
+    'plot.R'
+    'read_data.R'
+    'reshape_data.R'

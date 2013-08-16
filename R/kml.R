@@ -21,3 +21,26 @@ raster2kml <- function(r, outfile){
     r2<-projectRaster(r, crs=newproj, method="bilinear") #convert to lat/lon CRS
     KML(r2, outfile, col=rev(terrain.colors(255)),colNA=NA, maxpixels=100000, blur=1, zip='', overwrite=TRUE)
 }
+
+points2kml <- function(points, outfile){
+    #get unique lat/lons 
+    latlon <- aggregate(x=cbind(points$lat, points$lon), by=list(points$plot), mean)
+    colnames(latlon) <- c('plot', 'lat', 'lon')
+    stopifnot(require(plotKML))
+    stopifnot(require(sp))
+    points<-cbind(latlon$lon, latlon$lat)
+    sp<-SpatialPoints(points, proj4string=CRS("+proj=longlat +datum=WGS84"))
+    KML(sp, 'testpoints', zip='', overwrite=TRUE)
+}
+
+#get unique lat/lons 
+#latlon <- aggregate(x=cbind(bsb$lat, bsb$lon), by=list(bsb$plot), mean)
+#colnames(latlon) <- c('plot', 'lat', 'lon')
+#points<-cbind(latlon$lon, latlon$lat)
+#sp<-SpatialPoints(points, proj4string=CRS("+proj=longlat +datum=WGS84"))
+#KML(sp, 'testpoints', zip='', overwrite=TRUE)
+
+
+
+
+
