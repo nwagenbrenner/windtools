@@ -1,0 +1,135 @@
+#=======================================================
+#     subset on speed criteria
+#=======================================================
+#' @title Subset wind data on speed criteria 
+#' @description
+#' \code{subsetOnSpeed} returns subsetted dataframe 
+#' @param df dataframe
+#' @param sensor name of sensor ('plot')
+#' @param condition '<' or '>'
+#' @param threshold threshold speed to subset on
+#' @return subsetted dataframe
+#' @export
+#' @details
+#' This fucntion subsets the wind data frame based on
+#' speed criteria for a single sensor.
+#'
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+
+
+subsetOnSpeed <- function(df, sensor, condition, threshold){
+    if(condition == '>'){
+        s<-subset(df, subset=(plot == sensor & obs_speed > threshold))
+    }
+    else if(condition == '<'){
+        s<-subset(df, subset=(plot == sensor & obs_speed < threshold))
+    }
+    speedTest <- rep(NA, length(df$datetime)) #vector of T/F
+    
+    for(i in 1:length(df$datetime)){ 
+        speedTest[i] <- any(s$datetime == df$datetime[i]) #True if sensor obs_speed meets threshold condition
+    }
+
+    df<-cbind(df,speedTest)
+    df<-subset(df, subset=(df$speedTest == TRUE))
+    df <- subset(df, select = -speedTest) #drop speedTest from df
+
+    df[,"datetime"] <- as.factor(df[,"datetime"])
+    df[,"plot"] <- as.factor(df[,"plot"])
+    
+    return(df)
+}
+
+#============================================================
+#  Build df with hourly avg speeds
+#============================================================
+#' @title Build a dataframe with hourly averaged data 
+#' @description
+#' \code{buildHourlyAverages} returns dataframe with hourly averaged data 
+#' @param df dataframe
+#' @return dataframe with hourly averages
+#' @export
+#' @details
+#' This fucntion returns a dataframe with hourly averages of wind data.
+#' Data are averaged over all timesteps to produce hourly averages for 
+#' each hour of the day. This is useful to see, for example, what the 
+#' typcial wind field looks like at 1000 LT. It may be most usefule to
+#' call this function after other subsetting operations have been done.
+#' For example, you may want to first subset on speed to filter out
+#' high-wind event cases to examine diurnal wind patterns.
+#'
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+#' s.avg <- buildHourlyAverages(s)
+
+buildHourlyAverages <- function(df){
+    stopifnot(require("circular"))
+
+    obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
+    df <- cbind(df, obs_dir_radians)
+
+    hrSpeed<-data.frame(rbind(rep(NA,8)))
+    names(hrSpeed)<-c("obs_speed", "obs_dir", "lat", "lon", "plot", "u", "v", "hour")
+    
+    for (i in 0:23){
+        hour<-subset(df, subset=(as.POSIXlt(datetime)$hour == i))
+    
+        #make df with avgs for each plot
+        spdAvg<-tapply(hour$obs_speed, hour$plot, mean)
+        dirAvgRad<-tapply(hour$obs_dir_radians, hour$plot, mean.circular)
+        latAvg<-tapply(hour$lat, hour$plot, mean)
+        lonAvg<-tapply(hour$lon, hour$plot, mean)
+        dirAvg<-dirAvgRad * 180/pi
+        
+        for (m in 1:length(dirAvg)){
+            if(!is.na(dirAvg[m]) && dirAvg[m] < 0.0){
+                dirAvg[m]<-dirAvg[m] + 360.0
+            }
+        }
+        
+        hourlyAvg<-as.data.frame(cbind(spdAvg, dirAvg, latAvg, lonAvg))
+        plot<-rownames(hourlyAvg)
+        hourlyAvg<-as.data.frame(cbind(hourlyAvg, plot))
+        row.names(hourlyAvg) <- NULL
+        
+        # calc u, v for avg speeds and add to speed df
+        u<-mapply(speed2u, hourlyAvg$spdAvg, hourlyAvg$dirAvg)
+        v<-mapply(speed2v, hourlyAvg$spdAvg, hourlyAvg$dirAvg)
+        hourlyAvg<-as.data.frame(cbind(hourlyAvg,u,v,i))
+        colnames(hourlyAvg)<-c('obs_speed', 'obs_dir', 'lat', 'lon', 'plot', 'u', 'v', 'hour')
+        hrSpeed<-rbind(hrSpeed, hourlyAvg)
+    }
+
+    hrSpeed<-na.omit(hrSpeed)
+    hrSpeed[,"hour"] <- as.factor(hrSpeed[,"hour"])
+    
+    return(hrSpeed)
+}
+
+#======================================================
+#   subset the averaged hourly ds on hours
+#======================================================
+#' @title Subset an averaged hourly dataframe by hour
+#' @description
+#' \code{subsetOnHour} returns subsetted dataframe with requested hours 
+#' @param df dataframe
+#' @param h vector of hours
+#' @return subsetted dataframe with requested hours
+#' @export
+#' @details
+#' This fucntion returns a subsetted dataframe with specific hours 
+#' from an hourly averaged dataframe.
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+#' s.avg <- buildHourlyAverages(s)
+#' h <- c(0, 6, 12, 18)
+#' s.hr <- subsetOnHour(s.avg, h)
+
+subsetOnHour <- function(df, h){
+    subHrSpeed<-subset(df, subset=(hour %in% h))
+    return(subHrSpeed)
+}
