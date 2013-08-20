@@ -30,3 +30,4 @@ Collate:
     'plot.R'
     'read_data.R'
     'reshape_data.R'
+    'wn_read_bias_data.R'
