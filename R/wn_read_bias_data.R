@@ -34,13 +34,13 @@ wnReadBiasData <- function(fileName, type){ #type p = point
 #' @description
 #' \code{wnBuildBiasDf} convert list of bias dataframes into single dataframe
 #' @param dfList list of dataframes to combine returned from wnReadBiasData()
-#' @param nameList name of the weather forecast used in WindNinja simulation
+#' @param nameList list of weather forecasts used in WindNinja simulation
 #' @return dataframe that can be used with other wintools functions
 #' @export
 #' @details
 #' Combines multiple bias.txt files that have been read in with wnReadBiasData()
-#' into a single dataframe that can be used with other windtools functions.
-
+#' into a single dataframe that can be used with other windtools functions. Note 
+#' that dfList and nameList MUST be in the same order.
 
 wnBuildBiasDf <- function(dfList, nameList){
     d <- data.frame(rbind(rep(NA,13))) #set col names for bias data frame
@@ -68,6 +68,20 @@ wnBuildBiasDf <- function(dfList, nameList){
     d[,"fcastName"] <- as.factor(d[,"fcastName"])
     d[,"fcastType"] <- as.factor(d[,"fcastType"]) 
     d[,"wxType"] <- as.factor(d[,"wxType"])
+    
+    levels(d$fcastName)[levels(d$fcastName)=="WN-NAM"] <- "WindNinja-NAM"
+    levels(d$fcastName)[levels(d$fcastName)=="NAM"] <- "NAM (12 km)"
+    levels(d$fcastName)[levels(d$fcastName)=="HRRR"] <- "HRRR (3 km)"
+    levels(d$fcastName)[levels(d$fcastName)=="WN-HRRR"] <- "WindNinja-HRRR"
+    levels(d$fcastName)[levels(d$fcastName)=="WRFUW"] <- "WRF-UW (4 km)"
+    levels(d$fcastName)[levels(d$fcastName)=="WN-WRFUW"] <- "WindNinja-WRF-UW"
+    levels(d$fcastName)[levels(d$fcastName)=="WRFNARR"] <- "WRF-NARR (1.33 km)"
+    levels(d$fcastName)[levels(d$fcastName)=="WN-WRFNARR"] <- "WindNinja-WRF-NARR"
+    
+    #reorder factors for facet plots
+    d$fcastNameOrdered <- factor(d$fcastName, levels=c("NAM (12 km)", "WindNinja-NAM", "HRRR (3 km)",
+                        "WindNinja-HRRR", "WRF-UW (4 km)", "WindNinja-WRF-UW", 
+                        "WRF-NARR (1.33 km)", "WindNinja-WRF-NARR"))
     
     return(d)
 }

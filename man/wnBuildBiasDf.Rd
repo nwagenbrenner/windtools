@@ -8,7 +8,7 @@
   \item{dfList}{list of dataframes to combine returned from
   wnReadBiasData()}
 
-  \item{nameList}{name of the weather forecast used in
+  \item{nameList}{list of weather forecasts used in
   WindNinja simulation}
 }
 \value{
@@ -21,6 +21,7 @@
 \details{
   Combines multiple bias.txt files that have been read in
   with wnReadBiasData() into a single dataframe that can be
-  used with other windtools functions.
+  used with other windtools functions. Note that dfList and
+  nameList MUST be in the same order.
 }
 
