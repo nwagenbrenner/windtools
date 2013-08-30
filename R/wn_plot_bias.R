@@ -126,7 +126,70 @@ wnBoxplot <- function(df, var, jitter=FALSE){
     
 }
 
+#=======================================================
+#       scatter plots
+#=======================================================
+#' @title Plot bias vs observed data
+#' @description
+#' \code{wnPlotBiasVsObs} plots bias vs observed data faceted on wx model type
+#' @param df dataframe returned from wnBuildBiasDf()
+#' @param var variable to plot ('speed' or 'direction')
+#' @return ggplot2 object
+#' @export
+#' @details
+#' Returns a scatter plot of speed or direction bias vs observed data faceted
+#' on weather model type.
 
+wnPlotBiasVsObs <- function(df, var){
+    if(var == 'speed'){
+        p <- ggplot(df, aes(x=obs_speed, y=bias_speed, colour=fcastType)) +
+            ggtitle('Observed Speed vs Bias Speed')
+    }
+    else if(var == 'direction'){
+        p <- ggplot(df, aes(x=obs_dir, y=bias_dir, colour=fcastType)) +
+            ggtitle('Observed Direction vs Bias Direction')
+    }
+    else{
+        stop('Incorrect variable specified for var. Options are \'speed\' or \'direction\'.')
+    }
+
+        p <- p + geom_point(shape=19, size=1.5, alpha = 0.5) +
+            geom_smooth(method=loess) + # uses loess fit
+            scale_colour_brewer(palette='Set1') +
+            facet_wrap( ~ wxType, ncol=1)
+        
+    return(p)
+}
+
+#' @title Plot observed vs predicted values
+#' @description
+#' \code{wnPlotObsVsPred} plots observed vs. predicted data
+#' @param df dataframe returned from wnBuildBiasDf()
+#' @param var variable to plot ('speed' or 'direction')
+#' @return ggplot2 object
+#' @export
+#' @details
+#' Returns a scatter plot of observed vs predicted speed or direction data.
+wnPlotObsVsPred <- function(df, var){
+    if(var == 'speed'){
+        p<-ggplot(data, aes(x=obs_speed, y=pred_speed, colour=fcastName)) +
+            xlab("Observed Speed (m/s)") + ylab("Predicted Speed (m/s)")
+    }
+    else if(var == 'direction'){
+        p<-ggplot(data, aes(x=obs_dir, y=pred_dir, colour=fcastName)) +
+            xlab("Observed Direction (m/s)") + ylab("Predicted Direction (m/s)")
+    }
+    else{
+        stop('Incorrect variable specified for var. Options are \'speed\' or \'direction\'.')
+    }
+    p <- p + geom_point(shape=19, size=1.5, alpha = 0.5) +
+            geom_smooth(method=loess) +
+            scale_colour_brewer(palette='Set1') +
+            theme_bw() +
+            geom_abline(intercept=0, slope=1, linetype='dashed')
+            
+    return(p)
+}
 
         
 
