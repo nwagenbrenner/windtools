@@ -42,6 +42,36 @@ subsetOnSpeed <- function(df, sensor, condition, threshold){
     return(df)
 }
 
+#=======================================================
+#     subset on datetime criteria
+#=======================================================
+#' @title Subset wind data on datetime criteria 
+#' @description
+#' \code{subsetOnDate} returns subsetted dataframe 
+#' @param df dataframe
+#' @param condition '<' or '>'
+#' @param dt datetime (as a POSIXct object) to subset on
+#' @return subsetted dataframe
+#' @export
+#' @details
+#' This fucntion subsets the wind data frame based on
+#' a datetime criteria. dt must be a POSIXct object.
+#'
+#' @examples
+#' data(wind)
+#' dt <- as.POSIXct(strptime("2010-08-01 00:00:00", '%Y-%m-%d %H:%M:%S'))
+#' s <- subsetOnDate(wind, '<', dt)
+
+subsetOnDate <- function(df, condition, dt){
+    if(condition == '>'){
+        s<-subset(df, subset=(datetime > dt))
+    }
+    else if(condition == '<'){
+        s<-subset(df, subset=(datetime < dt))
+    }   
+    return(s)
+}
+
 #============================================================
 #  Build df with hourly avg speeds
 #============================================================
