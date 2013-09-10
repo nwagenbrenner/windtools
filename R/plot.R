@@ -77,7 +77,33 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype){
     p <- p + theme(legend.text=element_text(size = 12))
     p <- p + theme(strip.text.x=element_text(size = 12))
     p <- p + xlab("") + ylab("")
-    p <- p + facet_wrap( ~ hour)
+    #p <- p + facet_wrap( ~ hour, labeller=facet_labeller)
+    
+    p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
     
     return(p)
+}
+
+#=======================================================
+#    Relable plot facets
+#=======================================================
+#' @title Relable facets for wind regimes
+#' @description
+#' \code{facetLabeller} renames facet lables
+#' @param var varible to rename
+#' @param value new name to use in label
+#' @return value to use in new label
+#' @details
+#' Internal fucntion that returns a new name to use for
+#' a facet label. Labels are fixed for particular wind
+#' regimes. This function is called by \code{makeVectorMap}
+
+facetLabeller <- function(var, value){
+    value <- as.character(value)
+    if (var=="hour") { 
+        value[value==0] <- "Downslope"
+        value[value==11]   <- "Upslope"
+        value[value==16]   <- "Convective Mixing"
+    }
+    return(value)
 }

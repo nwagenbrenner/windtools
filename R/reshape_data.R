@@ -163,3 +163,28 @@ subsetOnHour <- function(df, h){
     subHrSpeed<-subset(df, subset=(hour %in% h))
     return(subHrSpeed)
 }
+
+#======================================================
+#   reorder a factor in a dataframe
+#======================================================
+#' @title Reorder a factor in a dataframe
+#' @description
+#' \code{reorderFactor} returns dataframe with reordered factor
+#' @param df dataframe
+#' @param var variable (factor) to reorder
+#' @param order list of factor levels in desired order
+#' @return dataframe with reordered factor levels for var
+#' @export
+#' @details
+#' This fucntion reorders the levels of factor var. This
+#' is useful, for example, for changing the facet order
+#' in ggplot2 graphics.
+#' @examples
+#' data(wind)
+#' order <- c(11, 16, 0, 1:10, 12:15, 17:23)
+#' s <- reorderFactor(wind, hour, order)
+
+reorderFactor <- function(df, var, order){
+    df$var <- factor(df$var, levels = order)
+    return(df)
+}

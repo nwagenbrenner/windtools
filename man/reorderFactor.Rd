@@ -1,0 +1,31 @@
+\name{reorderFactor}
+\alias{reorderFactor}
+\title{Reorder a factor in a dataframe}
+\usage{
+  reorderFactor(df, var, order)
+}
+\arguments{
+  \item{df}{dataframe}
+
+  \item{var}{variable (factor) to reorder}
+
+  \item{order}{list of factor levels in desired order}
+}
+\value{
+  dataframe with reordered factor levels for var
+}
+\description{
+  \code{reorderFactor} returns dataframe with reordered
+  factor
+}
+\details{
+  This fucntion reorders the levels of factor var. This is
+  useful, for example, for changing the facet order in
+  ggplot2 graphics.
+}
+\examples{
+data(wind)
+order <- c(11, 16, 0, 1:10, 12:15, 17:23)
+s <- reorderFactor(wind, hour, order)
+}
+
