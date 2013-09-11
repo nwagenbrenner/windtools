@@ -7,7 +7,8 @@
 \arguments{
   \item{df}{dataframe}
 
-  \item{var}{variable (factor) to reorder}
+  \item{var}{variable (factor) to reorder; options are:
+  'hour'}
 
   \item{order}{list of factor levels in desired order}
 }

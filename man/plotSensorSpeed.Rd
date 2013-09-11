@@ -2,12 +2,15 @@
 \alias{plotSensorSpeed}
 \title{Plot wind speed as a time series}
 \usage{
-  plotSensorSpeed(df, sensor)
+  plotSensorSpeed(df, sensor, threshold = NULL)
 }
 \arguments{
   \item{df}{dataframe}
 
   \item{sensor}{name of sensor ('plot')}
+
+  \item{threshold}{threshold speed to indicate with
+  horizontal bar}
 }
 \value{
   ggplot2 object

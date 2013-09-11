@@ -6,6 +6,7 @@
 #' \code{plotSensorSpeed} returns speed time series as a ggplot2 object 
 #' @param df dataframe
 #' @param sensor name of sensor ('plot')
+#' @param threshold threshold speed to indicate with horizontal bar
 #' @return ggplot2 object
 #' @export
 #' @details
@@ -16,7 +17,7 @@
 #' data(wind)
 #' plotSensorSpeed(wind, 'R26')
 
-plotSensorSpeed <- function(df, sensor){
+plotSensorSpeed <- function(df, sensor, threshold=NULL){
     stopifnot(require("ggplot2"))
     df<-subset(df, subset=(plot == sensor))
     df[,"datetime"] <- as.character(df[,"datetime"])
@@ -29,9 +30,13 @@ plotSensorSpeed <- function(df, sensor){
         xlab("Time") + ylab("Observed Speed (m/s)") +
         #scale_y_continuous(breaks=c(3,6,9,12,15,18)) + 
         #scale_colour_brewer(palette='Set1') +
-        geom_hline(yintercept = 6) +
         theme_bw() +
         ggtitle(sensor)
+    if(is.null(threshold) == FALSE){ 
+        p <- p+ geom_hline(yintercept = threshold)
+    }
+    p <- p + theme(axis.text = element_text(size = 14))
+    p <- p + theme(axis.title = element_text(size = 14))
      
     return(p)
 }
@@ -77,7 +82,8 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype){
     p <- p + theme(legend.text=element_text(size = 12))
     p <- p + theme(strip.text.x=element_text(size = 12))
     p <- p + xlab("") + ylab("")
-    #p <- p + facet_wrap( ~ hour, labeller=facet_labeller)
+    #p <- p + theme(axis.text.x = theme_blank())
+    #p <- p + theme(axis.ticks.x = theme_blank())
     
     p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
     

@@ -171,7 +171,7 @@ subsetOnHour <- function(df, h){
 #' @description
 #' \code{reorderFactor} returns dataframe with reordered factor
 #' @param df dataframe
-#' @param var variable (factor) to reorder
+#' @param var variable (factor) to reorder; options are: 'hour'
 #' @param order list of factor levels in desired order
 #' @return dataframe with reordered factor levels for var
 #' @export
@@ -185,6 +185,8 @@ subsetOnHour <- function(df, h){
 #' s <- reorderFactor(wind, hour, order)
 
 reorderFactor <- function(df, var, order){
-    df$var <- factor(df$var, levels = order)
+    if (var == 'hour'){
+        df$hour <- factor(df$hour, levels = order)
+    }
     return(df)
 }
