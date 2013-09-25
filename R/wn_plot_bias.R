@@ -59,7 +59,7 @@ wnPlotDirTs <- function(df){
     p<-ggplot(df, aes(x=datetime, y=pred_dir, colour=fcastType)) +
         geom_line(linetype="dashed") + 
         geom_point(shape=19, size=1.5, alpha = 1.0) +
-        xlab("Time") + ylab("Speed (m/s)") +
+        xlab("Time") + ylab("Direction (m/s)") +
         scale_colour_brewer(name='Model', palette='Set1')
 
     p<-p + theme(axis.text.x = element_text(angle = 45))
