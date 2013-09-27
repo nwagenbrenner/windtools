@@ -52,6 +52,8 @@ plotSensorSpeed <- function(df, sensor, threshold=NULL){
 #' @param lon center lon of Google Maps image
 #' @param zoom zoom for Google Maps image (1-20)
 #' @param maptype type of Google Maps image (terrain, hybrid, satellite, roadmap)
+#' @param colorscale color scale to use for vectors (discrete or continuous)
+#' @param axis_labels whether or not to plot axis labels on map (TRUE or FALSE)
 #' @return ggmap object representation of the wind field
 #' @export
 #' @details
@@ -67,32 +69,42 @@ plotSensorSpeed <- function(df, sensor, threshold=NULL){
 #' s.hr <- subsetOnHour(s.avg, h)
 #' m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
 
-makeVectorMap <- function(df, lat, lon, zoom, maptype){
+makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
+                          axis_labels=TRUE){
     stopifnot(require("ggmap"))
     stopifnot(require("grid"))
     myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
-    #scale u and v so that speed = 1, maintaining u:v ratio
-    #this will allow us to plot vectors of equal length, but oriented in the correct direction
-    u_scaled<-mapply(speed2u, 2, df$obs_dir)
-    v_scaled<-mapply(speed2v, 2, df$obs_dir)
-    speed_bracket <- binSpeeds(df$obs_speed)
-    df <- cbind(df, u_scaled, v_scaled, speed_bracket)
-
     #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
     #line segements centered on sensor location
     p <- ggmap(myMap)
 
-    p <- p + geom_segment(data=df, aes(x=lon+u_scaled/1000, y=lat+v_scaled/1000,
-            xend = lon-u_scaled/1000, yend = lat-v_scaled/1000, 
+    if(colorscale=='discrete'){
+        #scale u and v so that speed = 1, maintaining u:v ratio
+        #this will allow us to plot vectors of equal length, but oriented in the correct direction
+        u_scaled<-mapply(speed2u, 2, df$obs_dir)
+        v_scaled<-mapply(speed2v, 2, df$obs_dir)
+        speed_bracket <- binSpeeds(df$obs_speed)
+        df <- cbind(df, u_scaled, v_scaled, speed_bracket)
+        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/1000.0, y=lat+v_scaled/1000.0,
+            xend = lon-u_scaled/1000.0, yend = lat-v_scaled/1000.0, 
             colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
 	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
-            #scale_colour_gradient(limits=c(min(df$obs_speed),10), name="Speed (m/s)", low="blue", high="red")
+    }
+    else{
+        p <- p + geom_segment(data=df, aes(x=lon+u/1000.0, y=lat+v/1000.0,
+            xend = lon-u/1000.0, yend = lat-v/1000.0, 
+            colour = obs_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
+            scale_colour_gradient(limits=c(min(df$obs_speed),10), name="Speed (m/s)", low="blue", high="red")
+    }
     p <- p + theme(legend.title=element_text(size=12))
     p <- p + theme(legend.text=element_text(size = 12))
     p <- p + theme(strip.text.x=element_text(size = 12))
     p <- p + xlab("") + ylab("")
-    #p <- p + theme(axis.text.x = theme_blank())
-    #p <- p + theme(axis.ticks.x = theme_blank())
+
+    if(axis_labels == TRUE){
+        p <- p + theme(axis.text.x = theme_blank())
+        p <- p + theme(axis.ticks.x = theme_blank())
+    }
     
     p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
     

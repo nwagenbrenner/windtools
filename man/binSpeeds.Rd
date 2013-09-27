@@ -1,0 +1,25 @@
+\name{binSpeeds}
+\alias{binSpeeds}
+\title{Bin wind speeds for vector plotting}
+\usage{
+  binSpeeds(speedVector)
+}
+\arguments{
+  \item{speedVector}{vector of speeds to bin}
+}
+\value{
+  vector of speed bins as factors
+}
+\description{
+  \code{binSpeeds} returns a vector of speed bins as
+  factors
+}
+\details{
+  This fucntion bins wind speeds into discrete bins for use
+  with \code{makeVectorMap}
+}
+\examples{
+data(wind)
+speed_bracket <- binSpeeds(wind$obs_speed)
+}
+

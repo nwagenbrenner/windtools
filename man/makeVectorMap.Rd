@@ -2,7 +2,8 @@
 \alias{makeVectorMap}
 \title{Make a vector map of the wind field}
 \usage{
-  makeVectorMap(df, lat, lon, zoom, maptype)
+  makeVectorMap(df, lat, lon, zoom, maptype,
+    colorscale = "discrete", axis_labels = TRUE)
 }
 \arguments{
   \item{df}{dataframe}
@@ -15,6 +16,12 @@
 
   \item{maptype}{type of Google Maps image (terrain,
   hybrid, satellite, roadmap)}
+
+  \item{colorscale}{color scale to use for vectors
+  (discrete or continuous)}
+
+  \item{axis_labels}{whether or not to plot axis labels on
+  map (TRUE or FALSE)}
 }
 \value{
   ggmap object representation of the wind field
