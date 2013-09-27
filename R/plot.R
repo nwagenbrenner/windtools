@@ -71,13 +71,22 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype){
     stopifnot(require("ggmap"))
     stopifnot(require("grid"))
     myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
+    #scale u and v so that speed = 1, maintaining u:v ratio
+    #this will allow us to plot vectors of equal length, but oriented in the correct direction
+    u_scaled<-mapply(speed2u, 2, df$obs_dir)
+    v_scaled<-mapply(speed2v, 2, df$obs_dir)
+    speed_bracket <- binSpeeds(df$obs_speed)
+    df <- cbind(df, u_scaled, v_scaled, speed_bracket)
+
     #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
     #line segements centered on sensor location
     p <- ggmap(myMap)
-    p <- p + geom_segment(data=df, aes(x=lon+u/1000, y=lat+v/1000,
-            xend = lon-u/1000, yend = lat-v/1000, 
-            colour = obs_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) + 
-        scale_colour_continuous(name="Speed (m/s)", low="blue", high="red")
+
+    p <- p + geom_segment(data=df, aes(x=lon+u_scaled/1000, y=lat+v_scaled/1000,
+            xend = lon-u_scaled/1000, yend = lat-v_scaled/1000, 
+            colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
+	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
+            #scale_colour_gradient(limits=c(min(df$obs_speed),10), name="Speed (m/s)", low="blue", high="red")
     p <- p + theme(legend.title=element_text(size=12))
     p <- p + theme(legend.text=element_text(size = 12))
     p <- p + theme(strip.text.x=element_text(size = 12))
@@ -99,6 +108,7 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype){
 #' @param var varible to rename
 #' @param value new name to use in label
 #' @return value to use in new label
+#' @export
 #' @details
 #' Internal fucntion that returns a new name to use for
 #' a facet label. Labels are fixed for particular wind
