@@ -141,6 +141,7 @@ wnBoxplot <- function(df, var, jitter=FALSE){
 #' on weather model type.
 
 wnPlotBiasVsObs <- function(df, var){
+    stopifnot(require("ggplot2"))
     if(var == 'speed'){
         p <- ggplot(df, aes(x=obs_speed, y=bias_speed, colour=fcastType)) +
             ggtitle('Observed Speed vs Bias Speed')
@@ -171,6 +172,7 @@ wnPlotBiasVsObs <- function(df, var){
 #' @details
 #' Returns a scatter plot of observed vs predicted speed or direction data.
 wnPlotObsVsPred <- function(df, var){
+    stopifnot(require("ggplot2"))
     if(var == 'speed'){
         p<-ggplot(data, aes(x=obs_speed, y=pred_speed, colour=fcastName)) +
             xlab("Observed Speed (m/s)") + ylab("Predicted Speed (m/s)")
