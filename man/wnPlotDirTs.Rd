@@ -2,10 +2,15 @@
 \alias{wnPlotDirTs}
 \title{Make a faceted wind direction time series plot}
 \usage{
-  wnPlotDirTs(df)
+  wnPlotDirTs(df, color_list, xscale = NULL)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildTsDf()}
+
+  \item{color_list}{optional list of colors to use (e.g.,
+  colors <- c("WindNinja" = "red", "NWP" = "darkblue"))}
+
+  \item{xscale}{optional scale_x_datetime() argument}
 }
 \value{
   ggplot2 object
@@ -15,10 +20,7 @@
   faceted on sensor and weather model type
 }
 \details{
-  Plots the wind direction time series faceted on weather
-  model type if the supplied dataframe contains a single
-  sensor. If the dataframe contains multiple sensors, the
-  time series plot is facect on sensor and weather model
-  type.
+  Plots the wind direction time series faceted on NWP type
+  and model type
 }
 
