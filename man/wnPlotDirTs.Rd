@@ -2,7 +2,7 @@
 \alias{wnPlotDirTs}
 \title{Make a faceted wind direction time series plot}
 \usage{
-  wnPlotDirTs(df, color_list, xscale = NULL)
+  wnPlotDirTs(df, color_list = NULL, xscale = NULL)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildTsDf()}

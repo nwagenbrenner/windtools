@@ -2,7 +2,7 @@
 \alias{wnPlotSpeedTs}
 \title{Make a faceted wind speed time series plot}
 \usage{
-  wnPlotSpeedTs(df, color_list, xscale = NULL)
+  wnPlotSpeedTs(df, color_list = NULL, xscale = NULL)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildTimeSeriesDf()}

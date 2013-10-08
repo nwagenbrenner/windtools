@@ -11,7 +11,7 @@
 #' @export
 #' @details
 #' Plots the wind speed time series faceted on NWP model and model type 
-wnPlotSpeedTs <- function(df, color_list, xscale=NULL){
+wnPlotSpeedTs <- function(df, color_list=NULL, xscale=NULL){
     stopifnot(require("ggplot2"))
     p <- ggplot(df, aes(x=datetime, y=obs_speed)) +
         geom_point(shape=19, size=1.5, alpha = 1.0, colour='black', position="jitter") +
@@ -38,7 +38,9 @@ wnPlotSpeedTs <- function(df, color_list, xscale=NULL){
 
     p<-p + geom_point(data=df, aes(x=datetime, y=pred_speed, colour=fcastType),shape = 19, size=1.5, alpha = 0.5, position="jitter")
     #p<-p + geom_smooth(method="loess", aes(x=datetime, y=pred_speed, colour=fcastType))
-    p<-p + scale_colour_manual(values=color_list, name="Model Type")
+    if(!is.null(color_list)){
+        p<-p + scale_colour_manual(values=color_list, name="Model Type")
+    }
     p<-p + facet_grid(fcastType ~ wxType)
 
     if(length(unique(df$plot)) == 1){
@@ -62,7 +64,7 @@ wnPlotSpeedTs <- function(df, color_list, xscale=NULL){
 #' @export
 #' @details
 #' Plots the wind direction time series faceted on NWP type and model type
-wnPlotDirTs <- function(df, color_list, xscale=NULL){
+wnPlotDirTs <- function(df, color_list=NULL, xscale=NULL){
     stopifnot(require("ggplot2"))
     p <- ggplot(df, aes(x=datetime, y=obs_dir)) +
         geom_point(shape=19, size=1.5, alpha = 1.0, colour='black', position="jitter") +
@@ -89,7 +91,9 @@ wnPlotDirTs <- function(df, color_list, xscale=NULL){
 
     p<-p + geom_point(data=df, aes(x=datetime, y=pred_dir, colour=fcastType),shape = 19, size=1.5, alpha = 0.5, position="jitter")
     #p<-p + geom_smooth(method="loess", aes(x=datetime, y=pred_speed, colour=fcastType))
-    p<-p + scale_colour_manual(values=color_list, name="Model Type")
+    if(!is.null(color_list)){
+        p<-p + scale_colour_manual(values=color_list, name="Model Type")
+    }
     p<-p + facet_grid(fcastType ~ wxType)
 
     if(length(unique(df$plot)) == 1){
