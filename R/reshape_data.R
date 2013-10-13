@@ -49,7 +49,7 @@ subsetOnSpeed <- function(df, sensor, condition, threshold){
 #' @description
 #' \code{subsetOnDate} returns subsetted dataframe 
 #' @param df dataframe
-#' @param condition '<' or '>'
+#' @param condition '<', '==', or '>'
 #' @param dt datetime (as a POSIXct object) to subset on
 #' @return subsetted dataframe
 #' @export
@@ -65,6 +65,9 @@ subsetOnSpeed <- function(df, sensor, condition, threshold){
 subsetOnDate <- function(df, condition, dt){
     if(condition == '>'){
         s<-subset(df, subset=(datetime > dt))
+    }
+    if(condition == '=='){
+        s<-subset(df, subset=(datetime == dt))
     }
     else if(condition == '<'){
         s<-subset(df, subset=(datetime < dt))
@@ -104,7 +107,10 @@ buildHourlyAverages <- function(df){
     hrSpeed<-data.frame(rbind(rep(NA,8)))
     names(hrSpeed)<-c("obs_speed", "obs_dir", "lat", "lon", "plot", "u", "v", "hour")
     
-    for (i in 0:23){
+    #for (i in 0:23){
+    start = unique(as.POSIXlt(df$datetime)$hour)[1]
+    end = unique(as.POSIXlt(df$datetime)$hour)[length(unique(as.POSIXlt(df$datetime)$hour))]
+    for (i in start:end){
         hour<-subset(df, subset=(as.POSIXlt(datetime)$hour == i))
     
         #make df with avgs for each plot
@@ -119,6 +125,7 @@ buildHourlyAverages <- function(df){
                 dirAvg[m]<-dirAvg[m] + 360.0
             }
         }
+
         
         hourlyAvg<-as.data.frame(cbind(spdAvg, dirAvg, latAvg, lonAvg))
         plot<-rownames(hourlyAvg)

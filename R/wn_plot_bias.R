@@ -195,11 +195,11 @@ wnPlotBiasVsObs <- function(df, var){
 wnPlotObsVsPred <- function(df, var, color_list=NULL){
     stopifnot(require("ggplot2"))
     if(var == 'speed'){
-        p<-ggplot(data, aes(x=obs_speed, y=pred_speed, linetype = fcastTypeOrdered, colour=fcastNameOrdered)) +
+        p<-ggplot(df, aes(x=obs_speed, y=pred_speed, linetype = fcastTypeOrdered, colour=fcastNameOrdered)) +
             xlab("Observed Speed (m/s)") + ylab("Predicted Speed (m/s)")
     }
     else if(var == 'direction'){
-        p<-ggplot(data, aes(x=obs_dir, y=pred_dir, linetype = fcastTypeOrdered, colour=fcastNameOrdered)) +
+        p<-ggplot(df, aes(x=obs_dir, y=pred_dir, linetype = fcastTypeOrdered, colour=fcastNameOrdered)) +
             xlab("Observed Direction (m/s)") + ylab("Predicted Direction (m/s)")
     }
     else{
