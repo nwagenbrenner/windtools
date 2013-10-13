@@ -91,14 +91,15 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
 	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
     }
     else{
-        p <- p + geom_segment(data=df, aes(x=lon+u/2000.0, y=lat+v/2000.0,
-            xend = lon-u/2000.0, yend = lat-v/2000.0, 
+        p <- p + geom_segment(data=df, aes(x=lon+u/1500.0, y=lat+v/1500.0,
+            xend = lon-u/1500.0, yend = lat-v/1500.0, 
             colour = obs_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
             scale_colour_gradient(limits=c(min(df$obs_speed),max(df$obs_speed)), name="Speed (m/s)", low="blue", high="red")
     }
-    p <- p + theme(legend.title=element_text(size=12))
-    p <- p + theme(legend.text=element_text(size = 12))
-    p <- p + theme(strip.text.x=element_text(size = 12))
+    p <- p + theme(legend.title=element_text(size=14))
+    p <- p + theme(legend.text=element_text(size = 14))
+    p <- p + theme(strip.text.x=element_text(size = 18))
+    p <- p + theme(axis.text.x = element_text(size=18))
     p <- p + xlab("") + ylab("")
 
     if(axis_labels == TRUE){
