@@ -7,7 +7,7 @@
 \arguments{
   \item{df}{dataframe}
 
-  \item{condition}{'<' or '>'}
+  \item{condition}{'<', '==', or '>'}
 
   \item{dt}{datetime (as a POSIXct object) to subset on}
 }
