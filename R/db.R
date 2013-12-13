@@ -14,7 +14,7 @@
 #' This fucntion returns a dataframe of raw, 30-s wind data for a specified
 #' time period. Currently only connects to SQLite db. 
 
-dbFetchAll <- function(dbDrv, db, start_time, end_time){
+dbFetchAll <- function(drv, db, start_time, end_time){
     stopifnot(require("RSQLite"))
     con <- dbConnect(drv, dbname = db)
     
