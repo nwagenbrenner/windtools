@@ -1,6 +1,7 @@
 export(binSpeeds)
 export(buildHourlyAverages)
 export(dbFetchAll)
+export(dbFetchAvg)
 export(facetLabeller)
 export(makeVectorMap)
 export(plotSensorSpeed)
