@@ -1,13 +1,10 @@
 \name{dbFetchAvg}
 \alias{dbFetchAvg}
-\title{Fetch averaged data from a database for specified time period}
+\title{Fetch averaged data from an SQLite database for a specified time period}
 \usage{
-  dbFetchAvg(drv, db, start_time, end_time, avg_time)
+  dbFetchAvg(db, start_time, end_time, avg_time)
 }
 \arguments{
-  \item{drv}{database driver ("SQLite" is only option right
-  now)}
-
   \item{db}{database to query}
 
   \item{start_time}{format is '2011-08-15 06:00:00'}
@@ -21,8 +18,8 @@
   quality
 }
 \description{
-  \code{dbFetchAvg} returns a dataframe of wind data for
-  specified time period
+  \code{dbFetchAvg} returns a dataframe from an SQLite
+  database for a specified time period
 }
 \details{
   This fucntion returns a dataframe of averaged data for a
