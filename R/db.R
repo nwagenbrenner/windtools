@@ -6,8 +6,8 @@
 #' \code{dbFetchAll} returns a dataframe of wind data for specified time period
 #' @param dbDrv database driver ("SQLite" is only option right now)
 #' @param db database to query
-#' @param start_time format is '2011-08-15T06:00:00'
-#' @param end_time format is '2011-08-15T06:00:00'
+#' @param start_time format is '2011-08-15 06:00:00'
+#' @param end_time format is '2011-08-15 06:00:00'
 #' @return dataframe with id, date/time, speed, gust, direction, and quality
 #' @export
 #' @details
