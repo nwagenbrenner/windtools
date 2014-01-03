@@ -33,3 +33,4 @@ Collate:
     'wn_read_bias_data.R'
     'wn_plot_bias.R'
     'wn_reshape_bias_data.R'
+    'stats.R'

@@ -1,0 +1,20 @@
+\name{rmse}
+\alias{rmse}
+\title{Calculate the root mean squared error}
+\usage{
+  rmse(x)
+}
+\arguments{
+  \item{x}{vector}
+}
+\value{
+  root mean squared error
+}
+\description{
+  \code{rmse} returns the root mean squared error
+}
+\details{
+  This fucntion returns the root mean squred error of a
+  vector
+}
+
