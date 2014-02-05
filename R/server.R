@@ -1,5 +1,4 @@
 library(shiny)
-library(windtools)
 
 fileName <- '/home/natalie/observations_paper/bsb_obs_alldata.txt'
 d<-readData(fileName)
