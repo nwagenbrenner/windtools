@@ -1,5 +1,5 @@
 #=======================================================
-#    Fetch all data from a wind database
+#    Fetch all data from an sqlite database
 #=======================================================
 #' @title Fetch all data from a database for specified time period
 #' @description
