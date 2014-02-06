@@ -5,7 +5,7 @@
   dbFetchAll(db, start_time, end_time)
 }
 \arguments{
-  \item{db}{database to query}
+  \item{db}{wind database to query}
 
   \item{start_time}{format is '2011-08-15 06:00:00'}
 
@@ -21,7 +21,6 @@
 }
 \details{
   This fucntion returns a dataframe of raw, 30-s wind data
-  for a specified time period. Currently only connects to
-  SQLite db.
+  for a specified time period.
 }
 

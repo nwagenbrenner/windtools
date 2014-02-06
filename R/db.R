@@ -4,18 +4,18 @@
 #' @title Fetch all data from an SQLite database for a specified time period
 #' @description
 #' \code{dbFetchAll} returns a dataframe from an SQLite database for a specified time period
-#' @param db database to query
+#' @param db wind database to query
 #' @param start_time format is '2011-08-15 06:00:00'
 #' @param end_time format is '2011-08-15 06:00:00'
 #' @return dataframe with id, date/time, speed, gust, direction, and quality
 #' @export
 #' @details
 #' This fucntion returns a dataframe of raw, 30-s wind data for a specified
-#' time period. Currently only connects to SQLite db. 
+#' time period.
 
 dbFetchAll <- function(db, start_time, end_time){
     stopifnot(require("RSQLite"))
-    con <- dbConnect('RSQLite', dbname = db)
+    con <- dbConnect('SQLite', dbname = db)
     
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
             "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
