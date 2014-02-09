@@ -1,5 +1,6 @@
 export(binSpeeds)
 export(buildHourlyAverages)
+export(dbFetch)
 export(dbFetchAll)
 export(dbFetchAvg)
 export(dbFetchSensor)

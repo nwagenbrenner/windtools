@@ -35,7 +35,7 @@ dbFetchAll <- function(db, start_time, end_time){
 #=======================================================
 #' @title Fetch all data from a single sensor for a specified time period
 #' @description
-#' \code{dbFetchAll} returns a dataframe from an SQLite database for a single
+#' \code{dbFetchSensor} returns a dataframe from an SQLite database for a single
 #' senosr for a specified time period
 #' @param db wind database to query
 #' @param sensor sensor to extract info for
@@ -54,6 +54,34 @@ dbFetchSensor <- function(db, sensor, start_time, end_time){
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
             "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
             "AND plot_id ='", sensor, "' ", "AND Quality='OK'", collapse="")
+            
+    res <- dbSendQuery(con, statement = sql)
+    d <- fetch(res, n = -1) #fetch all data
+    dbClearResult(res)
+    dbDisconnect(con)
+    
+    return(d)
+}
+
+#=======================================================
+#    Generic fetch
+#=======================================================
+#' @title Generic fetching function
+#' @description
+#' \code{dbFetch} returns a dataframe from an SQLite database
+#' @param db wind database to query
+#' @param query_string query to submit to database
+#' @return dataframe
+#' @export
+#' @details
+#' This fucntion returns a dataframe of data returned
+#' from \code{query_string} 
+
+dbFetch <- function(db, query_string){
+    stopifnot(require("RSQLite"))
+    con <- dbConnect('SQLite', dbname = db)
+    
+    sql <- paste0(query_string)
             
     res <- dbSendQuery(con, statement = sql)
     d <- fetch(res, n = -1) #fetch all data
