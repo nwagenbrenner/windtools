@@ -29,6 +29,40 @@ dbFetchAll <- function(db, start_time, end_time){
     return(d)
 }
 
+
+#=======================================================
+#    Fetch all data from a single sensor
+#=======================================================
+#' @title Fetch all data from a single sensor for a specified time period
+#' @description
+#' \code{dbFetchAll} returns a dataframe from an SQLite database for a single
+#' senosr for a specified time period
+#' @param db wind database to query
+#' @param sensor sensor to extract info for
+#' @param start_time format is '2011-08-15 06:00:00'
+#' @param end_time format is '2011-08-15 06:00:00'
+#' @return dataframe with id, date/time, speed, gust, direction, and quality
+#' @export
+#' @details
+#' This fucntion returns a dataframe of raw, 30-s wind data for a 
+#' single sensor for a specified time period.
+
+dbFetchSensor <- function(db, sensor, start_time, end_time){
+    stopifnot(require("RSQLite"))
+    con <- dbConnect('SQLite', dbname = db)
+    
+    sql <- paste0("SELECT * FROM mean_flow_obs ", 
+            "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
+            "AND plot_id ='", sensor, "' ", "AND Quality='OK'", collapse="")
+            
+    res <- dbSendQuery(con, statement = sql)
+    d <- fetch(res, n = -1) #fetch all data
+    dbClearResult(res)
+    dbDisconnect(con)
+    
+    return(d)
+}
+
 #=======================================================
 #    Fetch averaged data from a wind database
 #=======================================================
