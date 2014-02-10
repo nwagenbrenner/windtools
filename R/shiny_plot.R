@@ -23,11 +23,11 @@ shinyPlotSensorSpeed <- function(df){
         ylab("Observed Speed (m/s)") +
         ggtitle(df$plot_id)
   
-     p<-p + scale_x_datetime(breaks=c(min(s$date_time2),
-                       (max(s$date_time2) - min(s$date_time2))/4 + min(s$date_time2),
-                       (max(s$date_time2) - min(s$date_time2))/4*2 + min(s$date_time2),
-                       (max(s$date_time2) - min(s$date_time2))/4*3 + min(s$date_time2),
-                       max(s$date_time2)))
+     p<-p + scale_x_datetime(breaks=c(min(df$date_time2),
+                       (max(df$date_time2) - min(df$date_time2))/4 + min(df$date_time2),
+                       (max(df$date_time2) - min(df$date_time2))/4*2 + min(df$date_time2),
+                       (max(df$date_time2) - min(df$date_time2))/4*3 + min(df$date_time2),
+                       max(df$date_time2)))
 
      p <- p + theme(axis.text.x = element_text(angle = 45))
      p <- p + theme(axis.text.x = element_text(vjust = 0.5))
