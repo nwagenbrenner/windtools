@@ -43,3 +43,38 @@ speed2v<-function(s,d){
     return (v)
 }
 
+#' @title Convert u,v to wind speed
+#' @description
+#' \code{uv2speed} returns wind speed
+#' @param u 
+#' @param v 
+#' @return wind speed
+#' @export
+#' @details
+#' This function converts u, v to wind speed.
+#'
+
+uv2speed<-function(u,v){
+    spd <- ((u*u+v*v)**0.5)
+    return (spd)
+}
+
+#' @title Convert u,v to wind direction
+#' @description
+#' \code{uv2dir} returns wind direction
+#' @param u 
+#' @param v 
+#' @return wind direction
+#' @export
+#' @details
+#' This function converts u, v to wind direction
+#' in degrees.
+
+uv2dir<-function(u,v){
+    dir = atan2(-u,-v)*180/3.14
+        if(dir < 0){
+            dir = dir + 360
+        }
+    return(dir)
+}
+        
