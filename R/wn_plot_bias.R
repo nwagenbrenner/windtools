@@ -167,11 +167,11 @@ wnBoxplot <- function(df, var, jitter=FALSE){
 wnPlotBiasVsObs <- function(df, var){
     stopifnot(require("ggplot2"))
     if(var == 'speed'){
-        p <- ggplot(df, aes(x=obs_speed, y=bias_speed, colour=fcastType)) +
+        p <- ggplot(df, aes(x=obs_speed, y=bias_speed, colour=wxTypeOrdered)) +
             ggtitle('Observed Speed vs Bias Speed')
     }
     else if(var == 'direction'){
-        p <- ggplot(df, aes(x=obs_dir, y=bias_dir, colour=fcastType)) +
+        p <- ggplot(df, aes(x=obs_dir, y=bias_dir, colour=wxTypeOrdered)) +
             ggtitle('Observed Direction vs Bias Direction')
     }
     else{
@@ -199,19 +199,20 @@ wnPlotBiasVsObs <- function(df, var){
 wnPlotObsVsPred <- function(df, var, color_list=NULL){
     stopifnot(require("ggplot2"))
     if(var == 'speed'){
-        p<-ggplot(df, aes(x=obs_speed, y=pred_speed, linetype = fcastTypeOrdered, colour=fcastNameOrdered)) +
+        p<-ggplot(df, aes(x=obs_speed, y=pred_speed, linetype = fcastTypeOrdered, colour=wxTypeOrdered)) +
             xlab("Observed Speed (m/s)") + ylab("Predicted Speed (m/s)")
     }
     else if(var == 'direction'){
-        p<-ggplot(df, aes(x=obs_dir, y=pred_dir, linetype = fcastTypeOrdered, colour=fcastNameOrdered)) +
+        p<-ggplot(df, aes(x=obs_dir, y=pred_dir, linetype = fcastTypeOrdered, colour=wxTypeOrdered)) +
             xlab("Observed Direction (m/s)") + ylab("Predicted Direction (m/s)")
     }
     else{
         stop('Incorrect variable specified for var. Options are \'speed\' or \'direction\'.')
     }
+    
     p <- p + geom_point(shape=19, size=1.5, alpha = 0.5) +
             geom_smooth(method=loess, size=0.75) +
-            scale_colour_brewer(palette='Set1', name="Model") +
+            scale_colour_brewer(palette='Set2', name="Model") +
             theme_bw() +
             geom_abline(intercept=0, slope=1, linetype='dashed') +
             scale_y_continuous(limits = c(-0.05, 14))

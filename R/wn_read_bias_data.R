@@ -77,11 +77,22 @@ wnBuildBiasDf <- function(dfList, nameList){
     levels(d$fcastName)[levels(d$fcastName)=="WN-WRFUW"] <- "WindNinja-WRF-UW"
     levels(d$fcastName)[levels(d$fcastName)=="WRFNARR"] <- "WRF-NARR (1.33 km)"
     levels(d$fcastName)[levels(d$fcastName)=="WN-WRFNARR"] <- "WindNinja-WRF-NARR"
+
+    levels(d$wxType)[levels(d$wxType)=="HRRR"] <- "HRRR (3 km)"
+    levels(d$wxType)[levels(d$wxType)=="NAM"] <- "NAM (12 km)"
+    levels(d$wxType)[levels(d$wxType)=="WRFNARR"] <- "WRF-NARR (1.33 km)"
+    levels(d$wxType)[levels(d$wxType)=="WRFUW"] <- "WRF-UW (4 km)"
+
     
     #reorder factors for facet plots
     d$fcastNameOrdered <- factor(d$fcastName, levels=c("NAM (12 km)", "WindNinja-NAM", "HRRR (3 km)",
                         "WindNinja-HRRR", "WRF-UW (4 km)", "WindNinja-WRF-UW", 
                         "WRF-NARR (1.33 km)", "WindNinja-WRF-NARR"))
+
+    d$fcastTypeOrdered <- factor(d$fcastType, levels=c("wn", "wx"))
+
+    d$wxTypeOrdered <- factor(d$wxType, levels=c("WRF-NARR (1.33 km)", "HRRR (3 km)",
+                                                  "WRF-UW (4 km)", "NAM (12 km)"))
     
     return(d)
 }
