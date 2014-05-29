@@ -24,15 +24,16 @@ wnPlotSpeedTs <- function(df, color_list=NULL, xscale=NULL){
     
     if(is.null(xscale)){
         #try to set reasonable breaks for x-axis
-        #p<-p + scale_x_datetime(breaks=c(min(df$datetime)-1*60*60,
-                       #min(df$datetime)+5*60*60,
-                       #min(df$datetime)+11*60*60,
-                       #min(df$datetime)+17*60*60))
-        p<-p + scale_x_datetime(breaks=c(min(df$datetime)+12*60*60,
-                       min(df$datetime)+12*3*60*60,
-                       min(df$datetime)+12*5*60*60,
-                       min(df$datetime)+12*7*60*60,
-                       min(df$datetime)+12*9*60*60))
+        p<-p + scale_x_datetime(breaks=c(min(df$datetime),
+                       (max(df$datetime) - min(df$datetime))/4 + min(df$datetime),
+                       (max(df$datetime) - min(df$datetime))/4*2 + min(df$datetime),
+                       (max(df$datetime) - min(df$datetime))/4*3 + min(df$datetime),
+                       max(df$datetime)))
+        #p<-p + scale_x_datetime(breaks=c(min(df$datetime)+12*60*60,
+        #               min(df$datetime)+12*3*60*60,
+        #               min(df$datetime)+12*5*60*60,
+        #               min(df$datetime)+12*7*60*60,
+        #               min(df$datetime)+12*9*60*60))
     }
     else{
         p <- p + xscale
@@ -79,15 +80,17 @@ wnPlotDirTs <- function(df, color_list=NULL, xscale=NULL){
     
     if(is.null(xscale)){
         #try to set reasonable breaks for x-axis
-        p<-p + scale_x_datetime(breaks=c(min(df$datetime)-1*60*60,
-                       min(df$datetime)+5*60*60,
-                       min(df$datetime)+11*60*60,
-                       min(df$datetime)+17*60*60))
-        #p<-p + scale_x_datetime(breaks=c(min(df$datetime)+12*60*60,
-      #                 min(df$datetime)+12*3*60*60,
-      #                 min(df$datetime)+12*5*60*60,
-      #                 min(df$datetime)+12*7*60*60,
-      #                 min(df$datetime)+12*9*60*60))
+        p<-p + scale_x_datetime(breaks=c(min(df$datetime),
+                       (max(df$datetime) - min(df$datetime))/4 + min(df$datetime),
+                       (max(df$datetime) - min(df$datetime))/4*2 + min(df$datetime),
+                       (max(df$datetime) - min(df$datetime))/4*3 + min(df$datetime),
+                       max(df$datetime)))
+
+        #p<-p + scale_x_datetime(breaks=c(min(df$datetime)-1*60*60,
+        #               min(df$datetime)+5*60*60,
+        #               min(df$datetime)+11*60*60,
+        #               min(df$datetime)+17*60*60))
+
     }
     else{
         p <- p + xscale
