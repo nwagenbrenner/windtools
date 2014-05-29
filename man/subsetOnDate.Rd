@@ -2,7 +2,7 @@
 \alias{subsetOnDate}
 \title{Subset wind data on datetime criteria}
 \usage{
-  subsetOnDate(df, condition, dt)
+subsetOnDate(df, condition, dt)
 }
 \arguments{
   \item{df}{dataframe}
@@ -12,14 +12,14 @@
   \item{dt}{datetime (as a POSIXct object) to subset on}
 }
 \value{
-  subsetted dataframe
+subsetted dataframe
 }
 \description{
-  \code{subsetOnDate} returns subsetted dataframe
+\code{subsetOnDate} returns subsetted dataframe
 }
 \details{
-  This fucntion subsets the wind data frame based on a
-  datetime criteria. dt must be a POSIXct object.
+This fucntion subsets the wind data frame based on a
+datetime criteria. dt must be a POSIXct object.
 }
 \examples{
 data(wind)

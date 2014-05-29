@@ -2,7 +2,7 @@
 \alias{wnBoxplot}
 \title{Make a box plot}
 \usage{
-  wnBoxplot(df, var, jitter = FALSE)
+wnBoxplot(df, var, jitter = FALSE)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildBiasDf()}
@@ -13,13 +13,13 @@
   (TRUE, FALSE)}
 }
 \value{
-  ggplot2 object
+ggplot2 object
 }
 \description{
-  \code{wnBoxplot} makes box plots for bias_speed or
-  bias_dir in main bias dataframe
+\code{wnBoxplot} makes box plots for bias_speed or bias_dir
+in main bias dataframe
 }
 \details{
-  Makes box plots for either speed or direction.
+Makes box plots for either speed or direction.
 }
 

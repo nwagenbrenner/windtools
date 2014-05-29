@@ -2,7 +2,7 @@
 \alias{reorderFactor}
 \title{Reorder a factor in a dataframe}
 \usage{
-  reorderFactor(df, var, order)
+reorderFactor(df, var, order)
 }
 \arguments{
   \item{df}{dataframe}
@@ -13,16 +13,16 @@
   \item{order}{list of factor levels in desired order}
 }
 \value{
-  dataframe with reordered factor levels for var
+dataframe with reordered factor levels for var
 }
 \description{
-  \code{reorderFactor} returns dataframe with reordered
-  factor
+\code{reorderFactor} returns dataframe with reordered
+factor
 }
 \details{
-  This fucntion reorders the levels of factor var. This is
-  useful, for example, for changing the facet order in
-  ggplot2 graphics.
+This fucntion reorders the levels of factor var. This is
+useful, for example, for changing the facet order in
+ggplot2 graphics.
 }
 \examples{
 data(wind)

@@ -2,7 +2,7 @@
 \alias{wnPlotObsVsPred}
 \title{Plot observed vs predicted values}
 \usage{
-  wnPlotObsVsPred(df, var, color_list = NULL)
+wnPlotObsVsPred(df, var, color_list = NULL)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildBiasDf()}
@@ -13,13 +13,13 @@
   legend}
 }
 \value{
-  ggplot2 object
+ggplot2 object
 }
 \description{
-  \code{wnPlotObsVsPred} plots observed vs. predicted data
+\code{wnPlotObsVsPred} plots observed vs. predicted data
 }
 \details{
-  Returns a scatter plot of observed vs predicted speed or
-  direction data.
+Returns a scatter plot of observed vs predicted speed or
+direction data.
 }
 

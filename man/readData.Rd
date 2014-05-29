@@ -2,22 +2,22 @@
 \alias{readData}
 \title{Read wind data}
 \usage{
-  readData(fileName)
+readData(fileName)
 }
 \arguments{
   \item{fileName}{full path to wind data file to be read
   in}
 }
 \value{
-  dataframe for use by other windtools functions
+dataframe for use by other windtools functions
 }
 \description{
-  \code{readData} reads wind data into a dataframe
+\code{readData} reads wind data into a dataframe
 }
 \details{
-  This fucntion reads in a file containing wind data. The
-  input file must contain the following data in this order:
-  'identifier', 'lat', 'lon', 'datetime', 'obs_speed',
-  obs_dir'
+This fucntion reads in a file containing wind data. The
+input file must contain the following data in this order:
+'identifier', 'lat', 'lon', 'datetime', 'obs_speed',
+obs_dir'
 }
 

@@ -2,8 +2,8 @@
 \alias{makeVectorMap}
 \title{Make a vector map of the wind field}
 \usage{
-  makeVectorMap(df, lat, lon, zoom, maptype,
-    colorscale = "discrete", axis_labels = TRUE)
+makeVectorMap(df, lat, lon, zoom, maptype, colorscale = "discrete",
+  axis_labels = TRUE)
 }
 \arguments{
   \item{df}{dataframe}
@@ -24,18 +24,17 @@
   map (TRUE or FALSE)}
 }
 \value{
-  ggmap object representation of the wind field
+ggmap object representation of the wind field
 }
 \description{
-  \code{makeVectorMap} returns a ggmap object of the vector
-  field
+\code{makeVectorMap} returns a ggmap object of the vector
+field
 }
 \details{
-  This fucntion returns a vector plot of the wind field
-  overlayed on a static Google Maps image. If multiple
-  hours are supplied, the plot is faceted on the hour. Note
-  that if more than 4-6 hours are requested this can take
-  some time.
+This fucntion returns a vector plot of the wind field
+overlayed on a static Google Maps image. If multiple hours
+are supplied, the plot is faceted on the hour. Note that if
+more than 4-6 hours are requested this can take some time.
 }
 \examples{
 data(wind)

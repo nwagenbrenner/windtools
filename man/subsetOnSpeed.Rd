@@ -2,7 +2,7 @@
 \alias{subsetOnSpeed}
 \title{Subset wind data on speed criteria}
 \usage{
-  subsetOnSpeed(df, sensor, condition, threshold)
+subsetOnSpeed(df, sensor, condition, threshold)
 }
 \arguments{
   \item{df}{dataframe}
@@ -14,14 +14,14 @@
   \item{threshold}{threshold speed to subset on}
 }
 \value{
-  subsetted dataframe
+subsetted dataframe
 }
 \description{
-  \code{subsetOnSpeed} returns subsetted dataframe
+\code{subsetOnSpeed} returns subsetted dataframe
 }
 \details{
-  This fucntion subsets the wind data frame based on speed
-  criteria for a single sensor.
+This fucntion subsets the wind data frame based on speed
+criteria for a single sensor.
 }
 \examples{
 data(wind)

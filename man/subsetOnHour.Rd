@@ -2,7 +2,7 @@
 \alias{subsetOnHour}
 \title{Subset an averaged hourly dataframe by hour}
 \usage{
-  subsetOnHour(df, h)
+subsetOnHour(df, h)
 }
 \arguments{
   \item{df}{dataframe}
@@ -10,15 +10,15 @@
   \item{h}{vector of hours}
 }
 \value{
-  subsetted dataframe with requested hours
+subsetted dataframe with requested hours
 }
 \description{
-  \code{subsetOnHour} returns subsetted dataframe with
-  requested hours
+\code{subsetOnHour} returns subsetted dataframe with
+requested hours
 }
 \details{
-  This fucntion returns a subsetted dataframe with specific
-  hours from an hourly averaged dataframe.
+This fucntion returns a subsetted dataframe with specific
+hours from an hourly averaged dataframe.
 }
 \examples{
 data(wind)

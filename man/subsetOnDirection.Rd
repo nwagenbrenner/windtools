@@ -1,0 +1,30 @@
+\name{subsetOnDirection}
+\alias{subsetOnDirection}
+\title{Subset wind data on direction criteria}
+\usage{
+subsetOnDirection(df, sensor, min, max, threshold)
+}
+\arguments{
+  \item{df}{dataframe}
+
+  \item{sensor}{name of sensor ('plot')}
+
+  \item{min}{min direction}
+
+  \item{max}{max direction}
+}
+\value{
+subsetted dataframe
+}
+\description{
+\code{subsetOnDirection} returns subsetted dataframe
+}
+\details{
+This fucntion subsets the wind data frame based on
+direction criteria for a single sensor.
+}
+\examples{
+data(wind)
+s <- subsetOnDireciton(wind, 'R2', 210, 230)
+}
+

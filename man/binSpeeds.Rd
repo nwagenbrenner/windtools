@@ -2,21 +2,20 @@
 \alias{binSpeeds}
 \title{Bin wind speeds for vector plotting}
 \usage{
-  binSpeeds(speedVector)
+binSpeeds(speedVector)
 }
 \arguments{
   \item{speedVector}{vector of speeds to bin}
 }
 \value{
-  vector of speed bins as factors
+vector of speed bins as factors
 }
 \description{
-  \code{binSpeeds} returns a vector of speed bins as
-  factors
+\code{binSpeeds} returns a vector of speed bins as factors
 }
 \details{
-  This fucntion bins wind speeds into discrete bins for use
-  with \code{makeVectorMap}
+This fucntion bins wind speeds into discrete bins for use
+with \code{makeVectorMap}
 }
 \examples{
 data(wind)

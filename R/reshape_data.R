@@ -1,4 +1,46 @@
 #=======================================================
+#     subset on direction criteria
+#=======================================================
+#' @title Subset wind data on direction criteria 
+#' @description
+#' \code{subsetOnDirection} returns subsetted dataframe 
+#' @param df dataframe
+#' @param sensor name of sensor ('plot')
+#' @param min min direction
+#' @param max max direction
+#' @return subsetted dataframe
+#' @export
+#' @details
+#' This fucntion subsets the wind data frame based on
+#' direction criteria for a single sensor.
+#'
+#' @examples
+#' data(wind)
+#' s <- subsetOnDireciton(wind, 'R2', 210, 230)
+
+subsetOnDirection <- function(df, sensor, min, max, threshold){
+
+    s<-subset(df, subset=(plot == sensor & obs_dir > min & obs_dir < max))
+
+    speedTest <- rep(NA, length(df$datetime)) #vector of T/F
+    
+    for(i in 1:length(df$datetime)){ 
+        speedTest[i] <- any(s$datetime == df$datetime[i]) #True if sensor obs_speed meets threshold condition
+    }
+
+    df<-cbind(df,speedTest)
+    df<-subset(df, subset=(df$speedTest == TRUE))
+    df <- subset(df, select = -speedTest) #drop speedTest from df
+
+    df[,"datetime"] <- as.factor(df[,"datetime"])
+    df[,"plot"] <- as.factor(df[,"plot"])
+    
+    return(df)
+}
+
+
+
+#=======================================================
 #     subset on speed criteria
 #=======================================================
 #' @title Subset wind data on speed criteria 

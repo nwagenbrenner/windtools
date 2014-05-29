@@ -23,15 +23,3 @@ Imports:
     RgoogleMaps,
     RSQLite,
     plotKML
-Collate:
-    'db.R'
-    'kml.R'
-    'convert.R'
-    'plot.R'
-    'read_data.R'
-    'reshape_data.R'
-    'wn_read_bias_data.R'
-    'wn_plot_bias.R'
-    'wn_reshape_bias_data.R'
-    'stats.R'
-    'shiny_plot.R'
