@@ -1,0 +1,31 @@
+\name{wnCreateBubbleMap}
+\alias{wnCreateBubbleMap}
+\title{Create bubble maps of wind prediction errors}
+\usage{
+wnCreateBubbleMap(df, model, var = "speed", stat = "bias", breaks = 5)
+}
+\arguments{
+  \item{df}{dataframe returned from wnBuildBiasDf() or
+  wnBuildTsDf()}
+
+  \item{model}{weather model to subset on (a level in
+  fcastName)}
+
+  \item{var}{variable to plot (speed, dir)}
+
+  \item{stat}{statistic to plot (bias, rmse)}
+
+  \item{breaks}{number of breaks to set in legend}
+}
+\value{
+bubbleGoogleMaps object
+}
+\description{
+\code{wnCreateBubbleMap} creates bubble maps of wind
+prediction errors
+}
+\details{
+Returns a bubble map of wind prediction errors. WindNinja
+and weather model errors are displayed in the same map.
+}
+

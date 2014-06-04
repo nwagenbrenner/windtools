@@ -226,6 +226,107 @@ wnPlotObsVsPred <- function(df, var, color_list=NULL){
     return(p)
 }
 
+#' @title Create bubble maps of wind prediction errors 
+#' @description
+#' \code{wnCreateBubbleMap} creates bubble maps of wind prediction errors
+#' @param df dataframe returned from wnBuildBiasDf() or wnBuildTsDf()
+#' @param model weather model to subset on (a level in fcastName)
+#' @param var variable to plot (speed, dir)
+#' @param stat statistic to plot (bias, rmse)
+#' @param breaks number of breaks to set in legend
+#' @return bubbleGoogleMaps object
+#' @export
+#' @details
+#' Returns a bubble map of wind prediction errors. WindNinja and weather
+#' model errors are displayed in the same map.
+
+wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
+    stopifnot(require("plotGoogleMaps"))
+    stopifnot(require("plyr"))
+    
+    if(var!="speed" & var!="dir"){
+        p<-"Invalid input for var. Options are speed and dir."
+        return(p)
+    }
+
+    wx<-subset(df, subset=(fcastName==model))
+    if(model == "WRF-NARR (1.33 km)"){
+        ninja<-subset(df, subset=(fcastName=="WindNinja-WRF-NARR"))
+    }
+    else if(model == "NAM (12 km)"){
+        ninja<-subset(df, subset=(fcastName=="WindNinja-NAM"))
+    }
+    else if(model == "HRRR (3 km)"){
+        ninja<-subset(df, subset=(fcastName=="WindNinja-HRRR"))
+    }
+    else if(model == "WRF-UW (4 km)"){
+        ninja<-subset(df, subset=(fcastName=="WindNinja-WRF-UW"))
+    }
+    else{
+        p<-"Can't determine model. Options are: WRF-NARR (1.33 km), NAM (12 km), HRRR (3 km), and WRF-UW (4 km)"
+        return(p)
+    }  
+
+    #drop unused columns
+    drops <- c("datetime","fcastName","fcastType","wxType",
+               "fcastNameOrdered","fcastTypeOrdered","wxTypeOrdered")
+    ninja<-ninja[,!(names(ninja) %in% drops)]
+    wx<-wx[,!(names(wx) %in% drops)]
+
+    #compute stats
+    ninja <- ddply(ninja, .(plot), function(df)c(mean(df$lat), 
+            mean(df$lon), mean(df$bias_speed), 
+            rmse(df$bias_speed), mean(df$bias_dir), rmse(df$bias_dir)))
+    colnames(ninja) <- c("plot", "lat", "lon", "bias_speed", "rmse_speed", "bias_dir", "rmse_dir")
+
+    wx <- ddply(wx, .(plot), function(df)c(mean(df$lat), 
+            mean(df$lon), mean(df$bias_speed), 
+            rmse(df$bias_speed), mean(df$bias_dir), rmse(df$bias_dir)))
+    colnames(wx) <- c("plot", "lat", "lon", "bias_speed", "rmse_speed", "bias_dir", "rmse_dir")
+
+    #round (avoid errors in caclulating data breaks)
+    ninja$bias_speed<-round(ninja$bias_speed, digits = 1)
+    ninja$rmse_speed<-round(ninja$rmse_speed, digits = 1)
+    ninja$bias_dir<-round(ninja$bias_dir, digits = 0)
+    ninja$rmse_dir<-round(ninja$rmse_dir, digits = 0)
+    wx$bias_speed<-round(wx$bias_speed, digits = 1)
+    wx$rmse_speed<-round(wx$rmse_speed, digits = 1)
+    wx$bias_dir<-round(wx$bias_dir, digits = 0)
+    wx$rmse_dir<-round(wx$rmse_dir, digits = 0)
+
+    #convert to SpatialPointsDataFrame
+    coordinates(ninja)<-c("lon", "lat")
+    ninja@proj4string<-CRS("+proj=longlat +datum=WGS84")
+    coordinates(wx)<-c("lon", "lat")
+    wx@proj4string<-CRS("+proj=longlat +datum=WGS84")    
+
+    v<-paste0(stat, "_", var)
+    max<-max(ninja@data[, v])
+    min<-min(ninja@data[, v])
+    b<-c((max-min)/4,(max-min)/2, (max-min)/1.4, max)
+
+    m<-bubbleGoogleMaps(wx, zcol=v,
+                    key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
+                    #key.entries = b, #upper endpoints, do not include min!
+                    add=TRUE,
+                    layerName=paste(model, v),
+                    max.radius=200, 
+                    do.sqrt=FALSE, 
+                    strokeOpacity=0)
+
+    m2<-bubbleGoogleMaps(ninja, zcol=v,
+                    key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
+                    #key.entries = b, #upper endpoints, do not include min!
+                    previousMap=m,
+                    layerName=paste0("WN-", model, " ", v),
+                    max.radius=200, 
+                    do.sqrt=FALSE, 
+                    strokeOpacity=0)
+
+    return(m2)
+
+}
+
         
 
 
