@@ -189,6 +189,83 @@ buildHourlyAverages <- function(df){
     return(hrSpeed)
 }
 
+#' @title Build a dataframe with hourly averaged observed and predicted data 
+#' @description
+#' \code{buildBiasHourlyAverages} returns dataframe with hourly averaged data 
+#' @param df bias dataframe returned from \code{wnBuildBiasDf} subset on one model
+#' @return dataframe with hourly averages
+#' @export
+#' @details
+#' This fucntion returns a dataframe with hourly averages of observed
+#' and predicted wind data. The dataframe should contain only one model for predictions.
+#' Data are averaged over all timesteps to produce 
+#' hourly averages for each hour of the day. This is useful to see, 
+#' for example, what the typcial wind field looks like at 1000 LT. 
+#' It may be most usefule to call this function after other subsetting operations have been done.
+#' For example, you may want to first subset on speed to filter out
+#' high-wind event cases to examine diurnal wind patterns.
+#'
+
+buildBiasHourlyAverages <- function(df){
+    stopifnot(require("circular"))
+
+    obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
+    pred_dir_radians <- df$pred_dir * pi/180 #convert to radians
+    df <- cbind(df, obs_dir_radians, pred_dir_radians)
+
+    hrSpeed<-data.frame(rbind(rep(NA,12)))
+    names(hrSpeed)<-c("obs_speed", "obs_dir", "pred_speed", "pred_dir", 
+                      "lat", "lon", "plot", "u_obs", "v_obs", "u_pred", "v_pred", 
+                      "hour")
+    
+    #for (i in 0:23){
+    start = unique(as.POSIXlt(df$datetime)$hour)[1]
+    end = unique(as.POSIXlt(df$datetime)$hour)[length(unique(as.POSIXlt(df$datetime)$hour))]
+    for (i in start:end){
+        hour<-subset(df, subset=(as.POSIXlt(datetime)$hour == i))
+    
+        #make df with avgs for each plot
+        obsSpdAvg<-tapply(hour$obs_speed, hour$plot, mean)
+        obsDirAvgRad<-tapply(hour$obs_dir_radians, hour$plot, mean.circular)
+        predSpdAvg<-tapply(hour$pred_speed, hour$plot, mean)
+        predDirAvgRad<-tapply(hour$pred_dir_radians, hour$plot, mean.circular)
+        latAvg<-tapply(hour$lat, hour$plot, mean)
+        lonAvg<-tapply(hour$lon, hour$plot, mean)
+        obsDirAvg<-obsDirAvgRad * 180/pi
+        predDirAvg<-predDirAvgRad * 180/pi
+        
+        for (m in 1:length(obsDirAvg)){
+            if(!is.na(obsDirAvg[m]) && obsDirAvg[m] < 0.0){
+                obsDirAvg[m]<-obsDirAvg[m] + 360.0
+            }
+            if(!is.na(predDirAvg[m]) && predDirAvg[m] < 0.0){
+                predDirAvg[m]<-predDirAvg[m] + 360.0
+            }
+        }
+        
+        hourlyAvg<-as.data.frame(cbind(obsSpdAvg, obsDirAvg, predSpdAvg, predDirAvg, latAvg, lonAvg))
+        plot<-rownames(hourlyAvg)
+        hourlyAvg<-as.data.frame(cbind(hourlyAvg, plot))
+        row.names(hourlyAvg) <- NULL
+        
+        # calc u, v for avg speeds and add to speed df
+        u_obs<-mapply(speed2u, hourlyAvg$obsSpdAvg, hourlyAvg$obsDirAvg)
+        v_obs<-mapply(speed2v, hourlyAvg$obsSpdAvg, hourlyAvg$obsDirAvg)
+        u_pred<-mapply(speed2u, hourlyAvg$predSpdAvg, hourlyAvg$predDirAvg)
+        v_pred<-mapply(speed2v, hourlyAvg$predSpdAvg, hourlyAvg$predDirAvg)
+        hourlyAvg<-as.data.frame(cbind(hourlyAvg,u_obs,v_obs,u_pred,v_pred,i))
+        colnames(hourlyAvg)<-c('obs_speed', 'obs_dir', 'pred_speed', 'pred_dir',
+                               'lat', 'lon', 'plot',
+                               'u_obs', 'v_obs', 'u_pred', 'v_pred', 'hour')
+        hrSpeed<-rbind(hrSpeed, hourlyAvg)
+    }
+
+    hrSpeed<-na.omit(hrSpeed)
+    hrSpeed[,"hour"] <- as.factor(hrSpeed[,"hour"])
+    
+    return(hrSpeed)
+}
+
 #======================================================
 #   subset the averaged hourly ds on hours
 #======================================================
