@@ -35,12 +35,12 @@ wnReadBiasData <- function(fileName, type){ #type p = point
 #' \code{wnBuildBiasDf} convert list of bias dataframes into single dataframe
 #' @param dfList list of dataframes to combine returned from wnReadBiasData()
 #' @param nameList list of weather forecasts used in WindNinja simulation
-#' @return dataframe that can be used with other wintools functions
+#' @return dataframe that can be used with other windtools functions
 #' @export
 #' @details
 #' Combines multiple bias.txt files that have been read in with wnReadBiasData()
 #' into a single dataframe that can be used with other windtools functions. Note 
-#' that dfList and nameList MUST be in the same order.
+#' that dfList and nameList must be in the same order.
 
 wnBuildBiasDf <- function(dfList, nameList){
     d <- data.frame(rbind(rep(NA,13))) #set col names for bias data frame
@@ -95,6 +95,8 @@ wnBuildBiasDf <- function(dfList, nameList){
 
     d$wxTypeOrdered <- factor(d$wxType, levels=c("WRF-NARR (1.33 km)", "HRRR (3 km)",
                                                   "WRF-UW (4 km)", "NAM (12 km)"))
+
+    d[,"datetime"] <- as.POSIXct(strptime(d[,"datetime"], '%Y-%b-%d %H:%M:%S'))
     
     return(d)
 }
