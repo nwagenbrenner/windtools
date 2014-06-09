@@ -32,7 +32,7 @@ subsetOnDirection <- function(df, sensor, min, max, threshold){
     df<-subset(df, subset=(df$speedTest == TRUE))
     df <- subset(df, select = -speedTest) #drop speedTest from df
 
-    df[,"datetime"] <- as.factor(df[,"datetime"])
+    #df[,"datetime"] <- as.factor(df[,"datetime"])
     df[,"plot"] <- as.factor(df[,"plot"])
     
     return(df)
@@ -78,7 +78,8 @@ subsetOnSpeed <- function(df, sensor, condition, threshold){
     df<-subset(df, subset=(df$speedTest == TRUE))
     df <- subset(df, select = -speedTest) #drop speedTest from df
 
-    df[,"datetime"] <- as.factor(df[,"datetime"])
+    
+    #df[,"datetime"] <- as.factor(df[,"datetime"])
     df[,"plot"] <- as.factor(df[,"plot"])
     
     return(df)
