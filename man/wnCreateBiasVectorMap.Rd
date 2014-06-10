@@ -2,11 +2,13 @@
 \alias{wnCreateBiasVectorMap}
 \title{Create vector maps of overlaid observed and predicted winds}
 \usage{
-wnCreateBiasVectorMap(df)
+wnCreateBiasVectorMap(df, colors = FALSE)
 }
 \arguments{
   \item{df}{dataframe returned from
   buildBiasHourlyAverages}
+
+  \item{colors}{color vectors by speed (TRUE/FALSE)}
 }
 \value{
 plotGoogleMaps object

@@ -331,12 +331,13 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
 #' @description
 #' \code{wnCreateBiasVectorMap} creates bubble maps of wind prediction errors
 #' @param df dataframe returned from buildBiasHourlyAverages
+#' @param colors color vectors by speed (TRUE/FALSE) 
 #' @return plotGoogleMaps object
 #' @export
 #' @details
 #' Returns a vector map of observed and predcited winds.
 
-wnCreateBiasVectorMap <- function(df){
+wnCreateBiasVectorMap <- function(df, colors=FALSE){
     stopifnot(require("plotGoogleMaps"))
     stopifnot(require("plyr"))
 
@@ -375,25 +376,27 @@ wnCreateBiasVectorMap <- function(df){
     pred_vect=vectorsSP(df, maxlength=500, zcol=c('pred_speed','pred_dir'))
 
     pal<-colorRampPalette(c("blue","green","yellow", "orange", "red"))
-    pal<-colorRampPalette(c("red"))
-    #b1<-min(df$pred_speed)
-    #b6<-max(df$pred_speed)
-    #b2<-b6-b1/4
-    #b3<-b6-b1/4 + b2
-    #b4<- b6-b1/4 + b3
-    #b5<-b6-b1/4 + b4
+    cp<-pal(5)
+    if(colors==FALSE){
+        pal<-colorRampPalette(c("red"))
+        cp<-pal(1)
+    }
+
     
     m<-plotGoogleMaps(obs_vect, zcol='obs_speed', 
-                           colPalette=pal(1),
+                           colPalette=cp,
                            mapTypeId='HYBRID',
                            strokeWeight=2,
                            layerName='Observed',
                            clickable=FALSE,add=TRUE)
    
-    pal<-colorRampPalette(c("blue"))
+    if(colors==FALSE){
+        pal<-colorRampPalette(c("blue"))
+        cp<-pal(1)
+    }
     m2<-plotGoogleMaps(pred_vect, 
                            zcol='pred_speed', 
-                           colPalette=pal(1),
+                           colPalette=cp,
                            previousMap=m,
                            strokeWeight=2,
                            layerName='Predicted',
