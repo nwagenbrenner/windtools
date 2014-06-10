@@ -204,7 +204,6 @@ buildHourlyAverages <- function(df){
 #' It may be most usefule to call this function after other subsetting operations have been done.
 #' For example, you may want to first subset on speed to filter out
 #' high-wind event cases to examine diurnal wind patterns.
-#'
 
 buildBiasHourlyAverages <- function(df){
     stopifnot(require("circular"))
