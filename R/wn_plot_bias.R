@@ -327,6 +327,83 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
 
 }
 
+#' @title Create vector maps of overlaid observed and predicted winds 
+#' @description
+#' \code{wnCreateBiasVectorMap} creates bubble maps of wind prediction errors
+#' @param df dataframe returned from buildBiasHourlyAverages
+#' @return plotGoogleMaps object
+#' @export
+#' @details
+#' Returns a vector map of observed and predcited winds.
+
+wnCreateBiasVectorMap <- function(df){
+    stopifnot(require("plotGoogleMaps"))
+    stopifnot(require("plyr"))
+
+    obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
+    pred_dir_radians <- df$pred_dir * pi/180 #convert to radians
+    df <- cbind(df, obs_dir_radians, pred_dir_radians)
+
+    df <- ddply(df, .(plot), function(d)c(mean(d$lat), mean(d$lon), 
+                mean(d$obs_speed), mean.circular(d$obs_dir_radians),
+                mean(d$pred_speed), mean.circular(d$pred_dir_radians)))
+    colnames(df) <- c("plot", "lat", "lon", "obs_speed", "obs_dir", "pred_speed", "pred_dir")
+
+    df$obs_dir<-df$obs_dir * 180/pi
+    df$pred_dir<-df$pred_dir * 180/pi
+
+    for (m in 1:length(df$obs_dir)){
+        if(!is.na(df$obs_dir[m]) && df$obs_dir[m] < 0.0){
+            df$obs_dir[m]<-df$obs_dir[m] + 360.0
+        }
+        if(!is.na(df$pred_dir[m]) && df$pred_dir[m] < 0.0){
+            df$pred_dir[m]<-df$pred_dir[m] + 360.0
+        }
+    }
+
+    #convert to SpatialPointsDataFrame
+    coordinates(df)<-c("lon", "lat")
+    df@proj4string<-CRS("+proj=longlat +datum=WGS84")
+        
+    df$obs_dir<-df$obs_dir - 180
+    df$obs_dir[df$obs_dir < 0] <- df$obs_dir[df$obs_dir < 0] + 360
+
+    df$pred_dir<-df$pred_dir - 180
+    df$pred_dir[df$pred_dir < 0] <- df$pred_dir[df$pred_dir < 0] + 360
+
+    obs_vect=vectorsSP(df, maxlength=500, zcol=c('obs_speed','obs_dir'))
+    pred_vect=vectorsSP(df, maxlength=500, zcol=c('pred_speed','pred_dir'))
+
+    pal<-colorRampPalette(c("blue","green","yellow", "orange", "red"))
+    pal<-colorRampPalette(c("red"))
+    #b1<-min(df$pred_speed)
+    #b6<-max(df$pred_speed)
+    #b2<-b6-b1/4
+    #b3<-b6-b1/4 + b2
+    #b4<- b6-b1/4 + b3
+    #b5<-b6-b1/4 + b4
+    
+    m<-plotGoogleMaps(obs_vect, zcol='obs_speed', 
+                           colPalette=pal(1),
+                           mapTypeId='HYBRID',
+                           strokeWeight=2,
+                           layerName='Observed',
+                           clickable=FALSE,add=TRUE)
+   
+    pal<-colorRampPalette(c("blue"))
+    m2<-plotGoogleMaps(pred_vect, 
+                           zcol='pred_speed', 
+                           colPalette=pal(1),
+                           previousMap=m,
+                           strokeWeight=2,
+                           layerName='Predicted',
+                           strokeOpacity = 1,
+                           clickable=FALSE)
+
+    return(m2)
+
+}
+
         
 
 
