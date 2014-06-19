@@ -213,10 +213,11 @@ wnPlotObsVsPred <- function(df, var, color_list=NULL){
         stop('Incorrect variable specified for var. Options are \'speed\' or \'direction\'.')
     }
     
-    p <- p + geom_point(shape=19, size=1.5, alpha = 0.5) +
-            geom_smooth(method=loess, size=0.75) +
+    p <- p + geom_point(size=2.5, alpha = 0.05) + #shape=19
+            #geom_smooth(method=loess, size=0.75) +
+            geom_smooth(method = "lm", formula = y ~ x + I(x^2)) +
             scale_colour_brewer(palette='Set2', name="Model") +
-            theme_bw() +
+            #theme_bw() +
             geom_abline(intercept=0, slope=1, linetype='dashed') +
             scale_y_continuous(limits = c(-0.05, 14))
             if(!is.null(color_list)){
