@@ -341,6 +341,7 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
 wnCreateBiasVectorMap <- function(df, colors=FALSE){
     stopifnot(require("plotGoogleMaps"))
     stopifnot(require("plyr"))
+    stopifnot(require("circular"))
 
     obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
     pred_dir_radians <- df$pred_dir * pi/180 #convert to radians
