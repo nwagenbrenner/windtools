@@ -409,6 +409,96 @@ wnCreateBiasVectorMap <- function(df, colors=FALSE){
 
 }
 
+#=======================================================
+#    vector field
+#=======================================================
+#' @title Make a vector map of observed or forecasted wind field
+#' @description
+#' \code{wnCreateVectorMap} returns a ggmap object of the vector field 
+#' @param df dataframe
+#' @param lat center lat of Google Maps image
+#' @param lon center lon of Google Maps image
+#' @param zoom zoom for Google Maps image (1-20)
+#' @param maptype type of Google Maps image (terrain, hybrid, satellite, roadmap)
+#' @param datatype data to display (obbserved or predicted)
+#' @param colorscale color scale to use for vectors (discrete or continuous)
+#' @param axis_labels whether or not to plot axis labels on map (TRUE or FALSE)
+#' @return ggmap object representation of the wind field
+#' @export
+#' @details
+#' This fucntion returns a vector plot of the wind field overlayed on 
+#' a static Google Maps image. If multiple hours are supplied, the plot
+#' is faceted on the hour. Note that if more than 4-6 hours are requested
+#' this can take some time. Observed or predicted winds can be plotted.
+#' @examples
+#' data(wind)
+#' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
+#' s.avg <- buildBiasHourlyAverages(s)
+#' h <- c(0, 6, 12, 18)
+#' s.hr <- subsetOnHour(s.avg, h)
+#' m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
+
+wnCreateVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
+                          axis_labels=TRUE, datatype='observed'){
+    stopifnot(require("ggmap"))
+    stopifnot(require("grid"))
+    myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
+    #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
+    #line segements centered on sensor location
+    p <- ggmap(myMap)
+
+    if(datatype=='observed'){
+        dir<-df$obs_dir
+        speed<-df$obs_speed
+    }
+    else{
+        dir<-df$pred_dir
+        speed<-df$pred_speed
+    } 
+
+    if(colorscale=='discrete'){
+        #scale u and v so that speed = 1, maintaining u:v ratio
+        #this will allow us to plot vectors of equal length, but oriented in the correct direction
+        u_scaled<-mapply(speed2u, 2, dir)
+        v_scaled<-mapply(speed2v, 2, dir)
+        speed_bracket <- binSpeeds(speed)
+        df <- cbind(df, u_scaled, v_scaled, speed_bracket)
+        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/1000.0, y=lat+v_scaled/1000.0,
+            xend = lon-u_scaled/1000.0, yend = lat-v_scaled/1000.0, 
+            colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
+	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
+    }
+    else{
+        if(datatype=='observed'){
+            p <- p + geom_segment(data=df, aes(x=lon+u_obs/1500.0, y=lat+v_obs/1500.0,
+                xend = lon-u_obs/1500.0, yend = lat-v_obs/1500.0, 
+                colour = obs_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
+        }
+        else{
+            p <- p + geom_segment(data=df, aes(x=lon+u_pred/1500.0, y=lat+v_pred/1500.0,
+                xend = lon-u_pred/1500.0, yend = lat-v_pred/1500.0, 
+                colour = pred_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
+        }
+
+        p<-p+scale_colour_gradient(limits=c(min(speed),max(speed)), name="Speed (m/s)", low="blue", high="red")
+    }
+    p <- p + theme(legend.title=element_text(size=14))
+    p <- p + theme(legend.text=element_text(size = 14))
+    p <- p + theme(strip.text.x=element_text(size = 18))
+    p <- p + theme(axis.text.x = element_text(size=18))
+    p <- p + theme(strip.text.y=element_text(size = 18))
+    p <- p + theme(axis.text.y = element_text(size=18))
+    p <- p + xlab("") + ylab("")
+
+    if(axis_labels == TRUE){
+        p <- p + theme(axis.text.x = element_blank())
+        p <- p + theme(axis.ticks.x = element_blank())
+    }
+    
+    p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
+    
+    return(p)
+}
         
 
 
