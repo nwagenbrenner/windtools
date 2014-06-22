@@ -1,0 +1,38 @@
+\name{wnCreatePredObsVectorMap}
+\alias{wnCreatePredObsVectorMap}
+\title{Make a vector map of observed and forecasted wind fields}
+\usage{
+wnCreatePredObsVectorMap(df, lat, lon, zoom, maptype, colorscale = "discrete",
+  axis_labels = TRUE)
+}
+\arguments{
+  \item{df}{dataframe}
+
+  \item{lat}{center lat of Google Maps image}
+
+  \item{lon}{center lon of Google Maps image}
+
+  \item{zoom}{zoom for Google Maps image (1-20)}
+
+  \item{maptype}{type of Google Maps image (terrain,
+  hybrid, satellite, roadmap)}
+
+  \item{colorscale}{color scale to use for vectors
+  (discrete or continuous)}
+
+  \item{axis_labels}{whether or not to plot axis labels on
+  map (TRUE or FALSE)}
+}
+\value{
+ggmap object representation of the wind field
+}
+\description{
+\code{wnCreateObsPredVectorMap} returns a ggmap object of
+the vector field
+}
+\details{
+This fucntion returns a vector plot of the wind field
+overlayed on a static Google Maps image. The plot is
+faceted on forecast name. See vector_plot.R for usage.
+}
+

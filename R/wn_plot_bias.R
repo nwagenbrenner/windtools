@@ -304,7 +304,7 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
     v<-paste0(stat, "_", var)
     max<-max(ninja@data[, v])
     min<-min(ninja@data[, v])
-    b<-c((max-min)/4,(max-min)/2, (max-min)/1.4, max)
+    #b<-c((max-min)/4,(max-min)/2, (max-min)/1.4, max)
 
     m<-bubbleGoogleMaps(wx, zcol=v,
                     key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
@@ -314,7 +314,8 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
                     max.radius=200, 
                     do.sqrt=FALSE, 
                     strokeOpacity=0)
-
+    
+    #b<-c(-10, -9, -5, -2, 0.5)
     m2<-bubbleGoogleMaps(ninja, zcol=v,
                     key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
                     #key.entries = b, #upper endpoints, do not include min!
@@ -463,8 +464,8 @@ wnCreateVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete'
         v_scaled<-mapply(speed2v, 2, dir)
         speed_bracket <- binSpeeds(speed)
         df <- cbind(df, u_scaled, v_scaled, speed_bracket)
-        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/1000.0, y=lat+v_scaled/1000.0,
-            xend = lon-u_scaled/1000.0, yend = lat-v_scaled/1000.0, 
+        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/500.0, y=lat+v_scaled/500.0,
+            xend = lon-u_scaled/500.0, yend = lat-v_scaled/500.0, 
             colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
 	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
     }
@@ -500,7 +501,91 @@ wnCreateVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete'
     return(p)
 }
         
+#=======================================================
+#    vector field faceted on forecast name
+#=======================================================
+#' @title Make a vector map of observed and forecasted wind fields
+#' @description
+#' \code{wnCreateObsPredVectorMap} returns a ggmap object of the vector field 
+#' @param df dataframe
+#' @param lat center lat of Google Maps image
+#' @param lon center lon of Google Maps image
+#' @param zoom zoom for Google Maps image (1-20)
+#' @param maptype type of Google Maps image (terrain, hybrid, satellite, roadmap)
+#' @param colorscale color scale to use for vectors (discrete or continuous)
+#' @param axis_labels whether or not to plot axis labels on map (TRUE or FALSE)
+#' @return ggmap object representation of the wind field
+#' @export
+#' @details
+#' This fucntion returns a vector plot of the wind field overlayed on 
+#' a static Google Maps image. The plot is faceted on forecast name. See
+#' vector_plot.R for usage.
 
+
+wnCreatePredObsVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
+                          axis_labels=TRUE){
+    stopifnot(require("ggmap"))
+    stopifnot(require("grid"))
+    myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
+    p <- ggmap(myMap)
+    
+    #create set of rows for obs data to rbind to df
+    temp<-subset(df, subset=(fcastName==fcastName[1]))
+    temp$u_pred<-temp$u_obs
+    temp$v_pred<-temp$v_obs
+    temp$pred_speed<-temp$obs_speed
+    temp$pred_dir<-temp$obs_dir
+    temp$u_obs<-NULL
+    temp$v_obs<-NULL
+    temp$obs_speed<-NULL
+    temp$obs_dir<-NULL
+    temp$fcastName<-'Observed'
+    
+    df$obs_speed<-NULL
+    df$obs_dir<-NULL
+    df$u_obs<-NULL
+    df$v_obs<-NULL
+
+    df<-rbind(df, temp)
+    
+    df$fcastNameOrdered <- factor(df$fcastName, levels=c("NAM (12 km)", "WindNinja-NAM", "Observed"))
+
+    if(colorscale=='discrete'){
+        #scale u and v so that speed = 1, maintaining u:v ratio
+        #this will allow us to plot vectors of equal length, but oriented in the correct direction
+        u_scaled<-mapply(speed2u, 2, df$pred_dir)
+        v_scaled<-mapply(speed2v, 2, df$pred_dir)
+        speed_bracket <- binSpeeds(df$pred_speed)
+        df <- cbind(df, u_scaled, v_scaled, speed_bracket)
+        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/500.0, y=lat+v_scaled/500.0,
+            xend = lon-u_scaled/500.0, yend = lat-v_scaled/500.0, 
+            colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
+	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
+    }
+    else{
+        p <- p + geom_segment(data=df, aes(x=lon+u_pred/1500.0, y=lat+v_pred/1500.0,
+            xend = lon-u_pred/1500.0, yend = lat-v_pred/1500.0, 
+            colour = pred_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
+
+        p<-p+scale_colour_gradient(limits=c(min(pred_speed),max(pred_speed)), name="Speed (m/s)", low="blue", high="red")
+    }
+    p <- p + theme(legend.title=element_text(size=14))
+    p <- p + theme(legend.text=element_text(size = 14))
+    p <- p + theme(strip.text.x=element_text(size = 18))
+    p <- p + theme(axis.text.x = element_text(size=18))
+    p <- p + theme(strip.text.y=element_text(size = 18))
+    p <- p + theme(axis.text.y = element_text(size=18))
+    p <- p + xlab("") + ylab("")
+
+    if(axis_labels == TRUE){
+        p <- p + theme(axis.text.x = element_blank())
+        p <- p + theme(axis.ticks.x = element_blank())
+    }
+   
+    p <- p + facet_grid(. ~ fcastNameOrdered)
+    
+    return(p)
+}
 
 
 
