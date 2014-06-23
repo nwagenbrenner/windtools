@@ -2,7 +2,8 @@
 \alias{wnCreateBubbleMap}
 \title{Create bubble maps of wind prediction errors}
 \usage{
-wnCreateBubbleMap(df, model, var = "speed", stat = "bias", breaks = 5)
+wnCreateBubbleMap(df, model, var = "speed", stat = "bias", breaks = 5,
+  b = NULL)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildBiasDf() or
@@ -16,6 +17,9 @@ wnCreateBubbleMap(df, model, var = "speed", stat = "bias", breaks = 5)
   \item{stat}{statistic to plot (bias, rmse)}
 
   \item{breaks}{number of breaks to set in legend}
+
+  \item{b}{vector of numeric break points for legend (upper
+  limits only)}
 }
 \value{
 bubbleGoogleMaps object

@@ -44,6 +44,7 @@ wnPlotSpeedTs <- function(df, color_list=NULL, xscale=NULL){
     if(!is.null(color_list)){
         p<-p + scale_colour_manual(values=color_list, name="Model Type")
     }
+
     p<-p + facet_grid(fcastType ~ wxType)
 
     if(length(unique(df$plot)) == 1){
@@ -235,13 +236,14 @@ wnPlotObsVsPred <- function(df, var, color_list=NULL){
 #' @param var variable to plot (speed, dir)
 #' @param stat statistic to plot (bias, rmse)
 #' @param breaks number of breaks to set in legend
+#' @param b vector of numeric break points for legend (upper limits only)
 #' @return bubbleGoogleMaps object
 #' @export
 #' @details
 #' Returns a bubble map of wind prediction errors. WindNinja and weather
 #' model errors are displayed in the same map.
 
-wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
+wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5, b=NULL){
     stopifnot(require("plotGoogleMaps"))
     stopifnot(require("plyr"))
     
@@ -304,21 +306,19 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5){
     v<-paste0(stat, "_", var)
     max<-max(ninja@data[, v])
     min<-min(ninja@data[, v])
-    #b<-c((max-min)/4,(max-min)/2, (max-min)/1.4, max)
 
     m<-bubbleGoogleMaps(wx, zcol=v,
-                    key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
-                    #key.entries = b, #upper endpoints, do not include min!
+                    #key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
+                    key.entries = b, #upper endpoints, do not include min!
                     add=TRUE,
                     layerName=paste(model, v),
                     max.radius=200, 
                     do.sqrt=FALSE, 
                     strokeOpacity=0)
     
-    #b<-c(-10, -9, -5, -2, 0.5)
     m2<-bubbleGoogleMaps(ninja, zcol=v,
-                    key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
-                    #key.entries = b, #upper endpoints, do not include min!
+                    #key.entries = quantile(ninja@data[, v], (1:breaks)/breaks),
+                    key.entries = b, #upper endpoints, do not include min!
                     previousMap=m,
                     layerName=paste0("WN-", model, " ", v),
                     max.radius=200, 
