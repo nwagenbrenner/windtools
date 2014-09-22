@@ -8,7 +8,7 @@
 #' This fucntion returns the root mean squred
 #' error of a vector
 rmse <- function(x){
-    sqrt(sum(x^2)/length(x-1))
+    sqrt(sum(x^2)/(length(x)-1))
 }
 
 #' @title Calculate the standard deviation of error
@@ -21,5 +21,5 @@ rmse <- function(x){
 #' This fucntion returns the standard deviation of
 #' error of a vector
 sde <- function(x){
-    sqrt(sum((x - mean(x))^2)/length(x-1))
+    sqrt(sum((x - mean(x))^2)/(length(x)-1))
 }
