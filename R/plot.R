@@ -105,8 +105,13 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
     p <- p + xlab("") + ylab("")
 
     if(axis_labels == TRUE){
+        p <- p + theme(axis.text.x = element_text(size = 16), axis.text.y = element_text(size = 16))
+    }
+    else{
         p <- p + theme(axis.text.x = element_blank())
         p <- p + theme(axis.ticks.x = element_blank())
+        p <- p + theme(axis.text.y = element_blank())
+        p <- p + theme(axis.ticks.y = element_blank())
     }
     
     p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
