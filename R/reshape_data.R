@@ -150,10 +150,10 @@ buildHourlyAverages <- function(df){
     hrSpeed<-data.frame(rbind(rep(NA,8)))
     names(hrSpeed)<-c("obs_speed", "obs_dir", "lat", "lon", "plot", "u", "v", "hour")
     
-    #for (i in 0:23){
-    start = unique(as.POSIXlt(df$datetime)$hour)[1]
-    end = unique(as.POSIXlt(df$datetime)$hour)[length(unique(as.POSIXlt(df$datetime)$hour))]
-    for (i in start:end){
+    for (i in 0:23){
+        if(!(i %in% unique(as.POSIXlt(df$datetime)$hour))){
+            next
+        } 
         hour<-subset(df, subset=(as.POSIXlt(datetime)$hour == i))
     
         #make df with avgs for each plot
@@ -168,7 +168,6 @@ buildHourlyAverages <- function(df){
                 dirAvg[m]<-dirAvg[m] + 360.0
             }
         }
-
         
         hourlyAvg<-as.data.frame(cbind(spdAvg, dirAvg, latAvg, lonAvg))
         plot<-rownames(hourlyAvg)
