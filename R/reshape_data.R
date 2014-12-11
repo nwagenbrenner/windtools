@@ -335,14 +335,15 @@ reorderFactor <- function(df, var, order){
 binSpeeds <- function(speedVector){
     b <- speedVector
     range <- max(speedVector)
-    b1 <- round((0.25 * range), digits = 2)
-    b2 <- round((0.5 * range), digits = 2)
-    b3 <- round((0.75 * range), digits = 2)
-    b4 <- round((0.85 * range), digits = 2)
+
+    b1 <- round((0.3 * range), digits = 1)
+    b2 <- round((0.6 * range), digits = 1)
+    b3 <- round((0.9 * range), digits = 1)
+    min <- round(min(speedVector), digits = 1)
+    max <- round(max(speedVector), digits = 1)
     for (i in 1:length(speedVector)){
-	#print(b1)
         if (speedVector[i] < b1){
-           b[i] <- paste("<", b1)
+           b[i] <- paste(min, "-", b1)
         }
         else if(speedVector[i] < b2){
             b[i] <- paste0(b1, "-", b2)
@@ -350,13 +351,12 @@ binSpeeds <- function(speedVector){
         else if(speedVector[i] < b3){
             b[i] <- paste0(b2, "-", b3)
         }
-        else if(speedVector[i] < b4){
-            b[i] <- paste0(b3, "-", b4)
+        else{ 
+            (b[i] <- paste(b3, "-", max))
         }
-        else (b[i] <- paste(">", b4))
     }
     b<-as.factor(b)
-    order<-c(paste(">", b4), paste0(b3, "-", b4), paste0(b2, "-", b3), paste0(b1, "-", b2) ,paste("<", b1))
+    order<-c(paste(b3, "-", max), paste0(b2, "-", b3), paste0(b1, "-", b2) ,paste(min, "-", b1))
     b <- factor(b, levels=order)
     return(b) 
 }
