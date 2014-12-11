@@ -344,6 +344,9 @@ binSpeeds <- function(speedVector){
         if (speedVector[i] < b1){
            b[i] <- paste("<", b1)
         }
+        else if(speedVector[i] < b2){
+            b[i] <- paste0(b1, "-", b2)
+        }
         else if(speedVector[i] < b3){
             b[i] <- paste0(b2, "-", b3)
         }
@@ -353,7 +356,7 @@ binSpeeds <- function(speedVector){
         else (b[i] <- paste(">", b4))
     }
     b<-as.factor(b)
-    order<-c(paste(">", b4), paste0(b3, "-", b4), paste0(b2, "-", b3), paste("<", b1))
+    order<-c(paste(">", b4), paste0(b3, "-", b4), paste0(b2, "-", b3), paste0(b1, "-", b2) ,paste("<", b1))
     b <- factor(b, levels=order)
     return(b) 
 }
