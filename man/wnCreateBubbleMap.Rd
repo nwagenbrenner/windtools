@@ -3,7 +3,7 @@
 \title{Create bubble maps of wind prediction errors}
 \usage{
 wnCreateBubbleMap(df, model, var = "speed", stat = "bias", breaks = 5,
-  b = NULL)
+  b = NULL, c = NULL)
 }
 \arguments{
   \item{df}{dataframe returned from wnBuildBiasDf() or
