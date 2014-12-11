@@ -344,10 +344,10 @@ binSpeeds <- function(speedVector){
         if (speedVector[i] < b1){
            b[i] <- paste("<", b1)
         }
-        else if(speedVector[i] < b2){
+        else if(speedVector[i] < b3){
             b[i] <- paste0(b2, "-", b3)
         }
-        else if(speedVector[i] < b3){
+        else if(speedVector[i] < b4){
             b[i] <- paste0(b3, "-", b4)
         }
         else (b[i] <- paste(">", b4))
