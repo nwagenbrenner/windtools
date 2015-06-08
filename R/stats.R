@@ -23,3 +23,16 @@ rmse <- function(x){
 sde <- function(x){
     sqrt(sum((x - mean(x))^2)/(length(x)-1))
 }
+
+#' @title Calculate the mean absolute error
+#' @description
+#' \code{mae} returns the mean absolute error
+#' @param x vector
+#' @return mean absolute error
+#' @export
+#' @details
+#' This fucntion returns the mean absolute
+#' error of a vector
+mae <- function(x){
+    sum(abs(x))/length(x)
+}
