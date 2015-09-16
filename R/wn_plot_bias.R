@@ -214,7 +214,7 @@ wnPlotObsVsPred <- function(df, var, color_list=NULL){
         stop('Incorrect variable specified for var. Options are \'speed\' or \'direction\'.')
     }
     
-    p <- p + geom_point(size=2.5, alpha = 0.05) + #shape=19
+    p <- p + geom_point(size=2.5, alpha = 0.04) + #shape=19
             #geom_smooth(method=loess, size=0.75) +
             geom_smooth(method = "lm", formula = y ~ x + I(x^2)) +
             scale_colour_brewer(palette='Set2', name="Model") +
@@ -243,7 +243,7 @@ wnPlotObsVsPred <- function(df, var, color_list=NULL){
 #' Returns a bubble map of wind prediction errors. WindNinja and weather
 #' model errors are displayed in the same map.
 
-wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5, b=NULL){
+wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5, b=NULL, c=NULL){
     stopifnot(require("plotGoogleMaps"))
     stopifnot(require("plyr"))
     
@@ -313,7 +313,8 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5, b=N
                     add=TRUE,
                     layerName=paste(model, v),
                     max.radius=200, 
-                    do.sqrt=FALSE, 
+                    do.sqrt=FALSE,
+                    colPalette=c, 
                     strokeOpacity=0)
     
     m2<-bubbleGoogleMaps(ninja, zcol=v,
@@ -322,7 +323,8 @@ wnCreateBubbleMap <- function(df, model, var="speed", stat="bias", breaks=5, b=N
                     previousMap=m,
                     layerName=paste0("WN-", model, " ", v),
                     max.radius=200, 
-                    do.sqrt=FALSE, 
+                    do.sqrt=FALSE,
+                    colPalette=c,  
                     strokeOpacity=0)
 
     return(m2)
@@ -548,7 +550,22 @@ wnCreatePredObsVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='di
 
     df<-rbind(df, temp)
     
-    df$fcastNameOrdered <- factor(df$fcastName, levels=c("NAM (12 km)", "WindNinja-NAM", "Observed"))
+    if("WindNinja-HRRR" %in% (df$fcastName)){
+        df$fcastNameOrdered <- factor(df$fcastName, levels=c("HRRR (3 km)", "WindNinja-HRRR", "Observed"))
+    }
+    else if("WindNinja-NAM" %in% (df$fcastName)){  
+        df$fcastNameOrdered <- factor(df$fcastName, levels=c("NAM (12 km)", "WindNinja-NAM", "Observed"))
+    }
+    else if("WindNinja-WRF-UW" %in% (df$fcastName)){
+        df$fcastNameOrdered <- factor(df$fcastName, levels=c("WRF-UW (4 km)", "WindNinja-WRF-UW", "Observed"))
+    }
+    else if("WindNinja-WRF-NARR" %in% (df$fcastName)){
+        df$fcastNameOrdered <- factor(df$fcastName, levels=c("WRF-NARR (1.33 km)", "WindNinja-WRF-NARR", "Observed"))
+    }
+    else{
+        print("fcastName not recognized.")
+        return()
+    }
 
     if(colorscale=='discrete'){
         #scale u and v so that speed = 1, maintaining u:v ratio
@@ -557,14 +574,14 @@ wnCreatePredObsVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='di
         v_scaled<-mapply(speed2v, 2, df$pred_dir)
         speed_bracket <- binSpeeds(df$pred_speed)
         df <- cbind(df, u_scaled, v_scaled, speed_bracket)
-        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/500.0, y=lat+v_scaled/500.0,
-            xend = lon-u_scaled/500.0, yend = lat-v_scaled/500.0, 
-            colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
+        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/800.0, y=lat+v_scaled/800.0,
+            xend = lon-u_scaled/800.0, yend = lat-v_scaled/800.0, 
+            colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 1.0) +
 	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
     }
     else{
-        p <- p + geom_segment(data=df, aes(x=lon+u_pred/1500.0, y=lat+v_pred/1500.0,
-            xend = lon-u_pred/1500.0, yend = lat-v_pred/1500.0, 
+        p <- p + geom_segment(data=df, aes(x=lon+u_pred/1200.0, y=lat+v_pred/1200.0,
+            xend = lon-u_pred/1200.0, yend = lat-v_pred/1200.0, 
             colour = pred_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
 
         p<-p+scale_colour_gradient(limits=c(min(pred_speed),max(pred_speed)), name="Speed (m/s)", low="blue", high="red")
