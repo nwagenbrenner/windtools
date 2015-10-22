@@ -54,6 +54,7 @@ plotSensorSpeed <- function(df, sensor, threshold=NULL){
 #' @param maptype type of Google Maps image (terrain, hybrid, satellite, roadmap)
 #' @param colorscale color scale to use for vectors (discrete or continuous)
 #' @param axis_labels whether or not to plot axis labels on map (TRUE or FALSE)
+#' @param scaling_factor controls the size of the wind vectors
 #' @return ggmap object representation of the wind field
 #' @export
 #' @details
@@ -70,9 +71,10 @@ plotSensorSpeed <- function(df, sensor, threshold=NULL){
 #' m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
 
 makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
-                          axis_labels=TRUE){
+                          axis_labels=TRUE, scaling_factor=800.0){
     stopifnot(require("ggmap"))
     stopifnot(require("grid"))
+    df<-cbind(df, scaling_factor)
     myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
     #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
     #line segements centered on sensor location
@@ -85,14 +87,14 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
         v_scaled<-mapply(speed2v, 2, df$obs_dir)
         speed_bracket <- binSpeeds(df$obs_speed)
         df <- cbind(df, u_scaled, v_scaled, speed_bracket)
-        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/1000.0, y=lat+v_scaled/1000.0,
-            xend = lon-u_scaled/1000.0, yend = lat-v_scaled/1000.0, 
+        p <- p + geom_segment(data=df, aes(x=lon+u_scaled/scaling_factor, y=lat+v_scaled/scaling_factor,
+            xend = lon-u_scaled/scaling_factor, yend = lat-v_scaled/scaling_factor, 
             colour = speed_bracket), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
 	    scale_colour_manual(values = c("red", "darkorange", "darkgreen", "blue"), name="Speed (m/s)")
     }
     else{
-        p <- p + geom_segment(data=df, aes(x=lon+u/1500.0, y=lat+v/1500.0,
-            xend = lon-u/1500.0, yend = lat-v/1500.0, 
+        p <- p + geom_segment(data=df, aes(x=lon+u/scaling_factor, y=lat+v/scaling_factor,
+            xend = lon-u/scaling_factor, yend = lat-v/scaling_factor, 
             colour = obs_speed), arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7) +
             scale_colour_gradient(limits=c(min(df$obs_speed),max(df$obs_speed)), name="Speed (m/s)", low="blue", high="red")
     }
@@ -120,7 +122,6 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
     
     return(p)
 }
-
 #=======================================================
 #    Relable plot facets
 #=======================================================
