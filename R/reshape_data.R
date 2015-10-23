@@ -119,6 +119,63 @@ subsetOnDate <- function(df, condition, dt){
 }
 
 #============================================================
+#  Build df with avg values for each plot
+#============================================================
+#' @title Build a dataframe with plot averages
+#' @description
+#' \code{buildAverages} returns dataframe with averaged data 
+#' @param df dataframe
+#' @return dataframe with averages for each plot
+#' @export
+#' @details
+#' This fucntion returns a dataframe with wind data averaged for each plot.
+#' Data are for each plot averaged over all the entire dataframe. 
+#'
+#' @examples
+#' data(wind)
+#' s.avg <- buildAverages(s)
+
+buildAverages <- function(df){
+    stopifnot(require("circular"))
+
+    obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
+    df <- cbind(df, obs_dir_radians)
+
+    avgs<-data.frame(rbind(rep(NA,7)))
+    names(avgs)<-c("obs_speed", "obs_dir", "lat", "lon", "plot", "u", "v")
+         
+    #make df with avgs for each plot
+    spdAvg<-tapply(df$obs_speed, df$plot, mean)
+    dirAvgRad<-tapply(df$obs_dir_radians, df$plot, mean.circular)
+    latAvg<-tapply(df$lat, df$plot, mean)
+    lonAvg<-tapply(df$lon, df$plot, mean)
+    dirAvg<-dirAvgRad * 180/pi
+        
+    for (m in 1:length(dirAvg)){
+        if(!is.na(dirAvg[m]) && dirAvg[m] < 0.0){
+            dirAvg[m]<-dirAvg[m] + 360.0
+        }
+    }
+        
+    avgData<-as.data.frame(cbind(spdAvg, dirAvg, latAvg, lonAvg))
+    plot<-rownames(avgData)
+    avgData<-as.data.frame(cbind(avgData, plot))
+    row.names(avgData) <- NULL
+        
+    # calc u, v for avg speeds and add to speed df
+    u<-mapply(speed2u, avgData$spdAvg, avgData$dirAvg)
+    v<-mapply(speed2v, avgData$spdAvg, avgData$dirAvg)
+    avgData<-as.data.frame(cbind(avgData,u,v))
+    colnames(avgData)<-c('obs_speed', 'obs_dir', 'lat', 'lon', 'plot', 'u', 'v')
+    avgs<-rbind(avgs, avgData)
+
+
+    avgs<-na.omit(avgs)
+    
+    return(avgs)
+}
+
+#============================================================
 #  Build df with hourly avg speeds
 #============================================================
 #' @title Build a dataframe with hourly averaged data 
@@ -336,11 +393,12 @@ binSpeeds <- function(speedVector){
     b <- speedVector
     range <- max(speedVector)
 
-    b1 <- round((0.3 * range), digits = 1)
-    b2 <- round((0.6 * range), digits = 1)
+    b1 <- round((0.2 * range), digits = 1)
+    b2 <- round((0.5 * range), digits = 1)
     b3 <- round((0.9 * range), digits = 1)
     min <- round(min(speedVector), digits = 1)
     max <- round(max(speedVector), digits = 1)
+
     for (i in 1:length(speedVector)){
         if (speedVector[i] < b1){
            b[i] <- paste(min, "-", b1)

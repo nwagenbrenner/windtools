@@ -5,7 +5,7 @@
 \title{Make a vector map of the wind field}
 \usage{
 makeVectorMap(df, lat, lon, zoom, maptype, colorscale = "discrete",
-  axis_labels = TRUE, scaling_factor = 800)
+  axis_labels = TRUE, scaling_factor = 800, hourly_averaging = TRUE)
 }
 \arguments{
 \item{df}{dataframe}
@@ -23,6 +23,8 @@ makeVectorMap(df, lat, lon, zoom, maptype, colorscale = "discrete",
 \item{axis_labels}{whether or not to plot axis labels on map (TRUE or FALSE)}
 
 \item{scaling_factor}{controls the size of the wind vectors}
+
+\item{hourly_averaging}{whether or not the data should be averaged by hour}
 }
 \value{
 ggmap object representation of the wind field
@@ -32,16 +34,18 @@ ggmap object representation of the wind field
 }
 \details{
 This fucntion returns a vector plot of the wind field overlayed on
-a static Google Maps image. If multiple hours are supplied, the plot
-is faceted on the hour. Note that if more than 4-6 hours are requested
-this can take some time.
+a static Google Maps image. If hourly_averaging is TRUE, the data will be
+averaged by the hour and the plot will be faceted on the hour. If hourly_averaging
+is set to FALSE, the data will be averaged by plot location only.
 }
 \examples{
 data(wind)
+#' #hourly vector maps for cases when R2 measured speeds < 6 m/s
 s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
-s.avg <- buildHourlyAverages(s)
-h <- c(0, 6, 12, 18)
-s.hr <- subsetOnHour(s.avg, h)
-m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
+m <- makeVectorMap(s, 43.45, -113.15, 12, 'terrain')
+#average vector map for a specific time period
+t<-as.POSIXct(strptime("2010-08-16 11:00:00", '\%Y-\%m-\%d \%H:\%M:\%S'))
+s <- subset(wind, subset=(datetime == t))
+m <- makeVectorMap((s, 43.45, -113.15, 12, 'terrain', hourly_averaging=FALSE)
 }
 

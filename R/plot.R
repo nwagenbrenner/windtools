@@ -55,34 +55,45 @@ plotSensorSpeed <- function(df, sensor, threshold=NULL){
 #' @param colorscale color scale to use for vectors (discrete or continuous)
 #' @param axis_labels whether or not to plot axis labels on map (TRUE or FALSE)
 #' @param scaling_factor controls the size of the wind vectors
+#' @param hourly_averaging whether or not the data should be averaged by hour
 #' @return ggmap object representation of the wind field
 #' @export
 #' @details
 #' This fucntion returns a vector plot of the wind field overlayed on 
-#' a static Google Maps image. If multiple hours are supplied, the plot
-#' is faceted on the hour. Note that if more than 4-6 hours are requested
-#' this can take some time.
+#' a static Google Maps image. If hourly_averaging is TRUE, the data will be
+#' averaged by the hour and the plot will be faceted on the hour. If hourly_averaging
+#' is set to FALSE, the data will be averaged by plot location only.
 #' @examples
 #' data(wind)
+#' #' #hourly vector maps for cases when R2 measured speeds < 6 m/s
 #' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
-#' s.avg <- buildHourlyAverages(s)
-#' h <- c(0, 6, 12, 18)
-#' s.hr <- subsetOnHour(s.avg, h)
-#' m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
+#' m <- makeVectorMap(s, 43.45, -113.15, 12, 'terrain')
+#' #average vector map for a specific time period
+#' t<-as.POSIXct(strptime("2010-08-16 11:00:00", '%Y-%m-%d %H:%M:%S'))
+#' s <- subset(wind, subset=(datetime == t))
+#' m <- makeVectorMap((s, 43.45, -113.15, 12, 'terrain', hourly_averaging=FALSE)
 
 makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
-                          axis_labels=TRUE, scaling_factor=800.0){
+                          axis_labels=TRUE, scaling_factor=800.0, hourly_averaging=TRUE){
     stopifnot(require("ggmap"))
     stopifnot(require("grid"))
+    
+    if(hourly_averaging == TRUE){
+        df<-buildHourlyAverages(df)
+    }
+    else{
+        df<-buildAverages(df)
+    }
+
     df<-cbind(df, scaling_factor)
+
     myMap<-get_map(location = c(lon=lon, lat=lat), zoom=zoom, maptype=maptype)
-    #note that xend,yend directions are reversed bc of weird issue with arrow (only plots correctly with ends=first)
-    #line segements centered on sensor location
     p <- ggmap(myMap)
 
+    #line segements centered on sensor location
     if(colorscale=='discrete'){
         #scale u and v so that speed = 1, maintaining u:v ratio
-        #this will allow us to plot vectors of equal length, but oriented in the correct direction
+        #plot vectors of equal length, but oriented in the correct direction
         u_scaled<-mapply(speed2u, 2, df$obs_dir)
         v_scaled<-mapply(speed2v, 2, df$obs_dir)
         speed_bracket <- binSpeeds(df$obs_speed)
@@ -116,12 +127,15 @@ makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
         p <- p + theme(axis.ticks.y = element_blank())
     }
     
-    if(!is.null(df$hour)){ 
-        p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
+    if(!is.null(df$hour)){
+        #don't do custom facet labeling for now... 
+        #p <- p + facet_grid(. ~ hour, labeller=facetLabeller)
+        p <- p + facet_wrap( ~ hour)
     }
     
     return(p)
 }
+
 #=======================================================
 #    Relable plot facets
 #=======================================================
