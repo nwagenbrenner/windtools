@@ -1,12 +1,13 @@
 #=======================================================
-#     plot speed time series for a single sensor
+#     plot a time series for a single sensor
 #=======================================================
-#' @title Plot wind speed as a time series 
+#' @title Plot wind speed/direction as a time series 
 #' @description
-#' \code{plotSensorSpeed} returns speed time series as a ggplot2 object 
+#' \code{plotSensor} returns speed and/or direction time series as a ggplot2 object 
 #' @param df dataframe
 #' @param sensor name of sensor ('plot')
-#' @param threshold threshold speed to indicate with horizontal bar
+#' @param var variable to plot ('speed', 'direction', or 'both')
+#' @param threshold threshold speed to indicate with horizontal bar; only shown when speed is plotted
 #' @return ggplot2 object
 #' @export
 #' @details
@@ -15,28 +16,59 @@
 #'
 #' @examples
 #' data(wind)
-#' plotSensorSpeed(wind, 'R26')
+#' plotSensor(wind, 'R26')
 
-plotSensorSpeed <- function(df, sensor, threshold=NULL){
+plotSensor <- function(df, sensor, var="speed", threshold=NULL){
     stopifnot(require("ggplot2"))
     df<-subset(df, subset=(plot == sensor))
     df[,"datetime"] <- as.character(df[,"datetime"])
     df[,"datetime"] <- as.POSIXct(strptime(df[,"datetime"], '%Y-%m-%d %H:%M:%S'))
 
-    p<-ggplot(df, aes(x=datetime, y=obs_speed)) +
-        geom_point(shape=19, size=1.5, alpha = 1) +
-        geom_line() +
-        #geom_smooth(method=loess) +
-        xlab("Time") + ylab("Observed Speed (m/s)") +
-        #scale_y_continuous(breaks=c(3,6,9,12,15,18)) + 
-        #scale_colour_brewer(palette='Set1') +
-        theme_bw() +
-        ggtitle(sensor)
-    if(is.null(threshold) == FALSE){ 
-        p <- p+ geom_hline(yintercept = threshold)
+    if(var=="speed"){    
+        p<-ggplot(df, aes(x=datetime, y=obs_speed)) +
+            geom_point(shape=19, size=1.5, alpha = 1) +
+            geom_line() +
+            xlab("Time") + ylab("Speed (m/s)") +
+            theme_bw() +
+            ggtitle(sensor)
+        if(is.null(threshold) == FALSE){ 
+            p <- p+ geom_hline(yintercept = threshold)
+        }
+        p <- p + theme(axis.text = element_text(size = 14))
+        p <- p + theme(axis.title = element_text(size = 14))
     }
-    p <- p + theme(axis.text = element_text(size = 14))
-    p <- p + theme(axis.title = element_text(size = 14))
+    else if(var=="direction"){
+        p<-ggplot(df, aes(x=datetime, y=obs_dir)) +
+            geom_point(shape=19, size=1.5, alpha = 1) +
+            xlab("Time") + ylab("Direction") +
+            theme_bw() +
+            ggtitle(sensor)
+        p <- p + theme(axis.text = element_text(size = 14))
+        p <- p + theme(axis.title = element_text(size = 14))
+    }
+    else if(var=='both'){
+        stopifnot(require("grid"))
+        u_scaled<-mapply(speed2u, 0.5, df$obs_dir) #just arrows, not scaled with speed
+        v_scaled<-mapply(speed2v, 0.5, df$obs_dir) #just arrows, not scaled with speed
+
+        df <- cbind(df, u_scaled, v_scaled)
+
+        p<-ggplot(df, aes(x=datetime, y=obs_speed)) +
+            geom_point(shape=19, size=1.5, alpha = 1) +
+            geom_line() +
+            xlab("Time") + ylab("Speed (m/s)") +
+            theme_bw() +
+            ggtitle(sensor) + 
+            theme(axis.text = element_text(size = 14)) +
+            theme(axis.title = element_text(size = 14)) +
+            geom_segment(data=df, aes(x=datetime+u_scaled*60*60, y=max(obs_speed)+1+v_scaled/4,
+            xend=datetime-u_scaled*60*60, yend=max(obs_speed)+1-v_scaled/4), 
+                arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
+    }
+    else{
+        print (paste0("Var '",var,"' not recognized. Options are 'speed', 'direciton', or 'both'"))
+        return
+    }
      
     return(p)
 }
