@@ -22,11 +22,11 @@ ggplot2 object
 \code{plotSensor} returns speed and/or direction time series as a ggplot2 object
 }
 \details{
-This fucntion creates a ggplot2 object of wind speed
+This fucntion creates a ggplot2 object of wind speed and/or direction
 vs. time for a single sensor.
 }
 \examples{
 data(wind)
-plotSensor(wind, 'R26')
+plotSensor(wind, 'R26', var='both')
 }
 

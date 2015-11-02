@@ -11,12 +11,12 @@
 #' @return ggplot2 object
 #' @export
 #' @details
-#' This fucntion creates a ggplot2 object of wind speed
+#' This fucntion creates a ggplot2 object of wind speed and/or direction
 #' vs. time for a single sensor.
 #'
 #' @examples
 #' data(wind)
-#' plotSensor(wind, 'R26')
+#' plotSensor(wind, 'R26', var='both')
 
 plotSensor <- function(df, sensor, var="speed", threshold=NULL){
     stopifnot(require("ggplot2"))
