@@ -4,7 +4,8 @@
 \alias{plotSensor}
 \title{Plot wind speed/direction as a time series}
 \usage{
-plotSensor(df, sensor, var = "speed", threshold = NULL)
+plotSensor(df, sensor, var = "speed", dir_symbol = "vector",
+  threshold = NULL)
 }
 \arguments{
 \item{df}{dataframe}
@@ -13,17 +14,22 @@ plotSensor(df, sensor, var = "speed", threshold = NULL)
 
 \item{var}{variable to plot ('speed', 'direction', or 'both')}
 
+\item{dir_symbol}{symbol to use for direction if var=='both'.}
+
 \item{threshold}{threshold speed to indicate with horizontal bar; only shown when speed is plotted}
 }
 \value{
-ggplot2 object
+ggplot2 object (unless var=='both' and dir_sybmol != 'vector')
 }
 \description{
 \code{plotSensor} returns speed and/or direction time series as a ggplot2 object
 }
 \details{
 This fucntion creates a ggplot2 object of wind speed and/or direction
-vs. time for a single sensor.
+vs. time for a single sensor. If var=='both' and dir_symbol != 'vector',
+direction will be plotted as points. This object includes two y-axes and is
+created using gtable and cannot be captured by the function; instead it
+is drawn when the function runs. All other plots are returned as ggplot2 objects.
 }
 \examples{
 data(wind)

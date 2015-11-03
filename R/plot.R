@@ -7,18 +7,22 @@
 #' @param df dataframe
 #' @param sensor name of sensor ('plot')
 #' @param var variable to plot ('speed', 'direction', or 'both')
+#' @param dir_symbol symbol to use for direction if var=='both'.  
 #' @param threshold threshold speed to indicate with horizontal bar; only shown when speed is plotted
-#' @return ggplot2 object
+#' @return ggplot2 object (unless var=='both' and dir_sybmol != 'vector')
 #' @export
 #' @details
 #' This fucntion creates a ggplot2 object of wind speed and/or direction
-#' vs. time for a single sensor.
+#' vs. time for a single sensor. If var=='both' and dir_symbol != 'vector', 
+#' direction will be plotted as points. This object includes two y-axes and is
+#' created using gtable and cannot be captured by the function; instead it 
+#' is drawn when the function runs. All other plots are returned as ggplot2 objects.
 #'
 #' @examples
 #' data(wind)
 #' plotSensor(wind, 'R26', var='both')
 
-plotSensor <- function(df, sensor, var="speed", threshold=NULL){
+plotSensor <- function(df, sensor, var="speed", dir_symbol="vector", threshold=NULL){
     stopifnot(require("ggplot2"))
     df<-subset(df, subset=(plot == sensor))
     df[,"datetime"] <- as.character(df[,"datetime"])
@@ -47,23 +51,70 @@ plotSensor <- function(df, sensor, var="speed", threshold=NULL){
         p <- p + theme(axis.title = element_text(size = 14))
     }
     else if(var=='both'){
-        stopifnot(require("grid"))
-        u_scaled<-mapply(speed2u, 0.5, df$obs_dir) #just arrows, not scaled with speed
-        v_scaled<-mapply(speed2v, 0.5, df$obs_dir) #just arrows, not scaled with speed
+        if(dir_symbol == 'vector'){
+            stopifnot(require("grid"))
+            u_scaled<-mapply(speed2u, 0.5, df$obs_dir) #just arrows, not scaled with speed
+            v_scaled<-mapply(speed2v, 0.5, df$obs_dir) #just arrows, not scaled with speed
 
-        df <- cbind(df, u_scaled, v_scaled)
+            df <- cbind(df, u_scaled, v_scaled)
 
-        p<-ggplot(df, aes(x=datetime, y=obs_speed)) +
-            geom_point(shape=19, size=1.5, alpha = 1) +
-            geom_line() +
-            xlab("Time") + ylab("Speed (m/s)") +
+            p<-ggplot(df, aes(x=datetime, y=obs_speed)) +
+                geom_point(shape=19, size=1.5, alpha = 1) +
+                geom_line() +
+                xlab("Time") + ylab("Speed (m/s)") +
+                theme_bw() +
+                ggtitle(sensor) + 
+                theme(axis.text = element_text(size = 14)) +
+                theme(axis.title = element_text(size = 14)) +
+                geom_segment(data=df, aes(x=datetime+u_scaled*60*60, y=max(obs_speed)+1+v_scaled/4,
+                xend=datetime-u_scaled*60*60, yend=max(obs_speed)+1-v_scaled/4), 
+                    arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
+        }
+        else{
+            #plot speed and direction as points with different y-axes
+            #the graph can't be captured, so just return after it plots
+            p1<-ggplot(df, aes(x=datetime, y=obs_speed)) +
+            geom_point(shape=19, size=1.5, alpha = 1, colour='darkblue') +
+            geom_line(colour='darkblue') +
+            xlab("Datetime") + ylab("Speed (m/s)") +
             theme_bw() +
-            ggtitle(sensor) + 
-            theme(axis.text = element_text(size = 14)) +
-            theme(axis.title = element_text(size = 14)) +
-            geom_segment(data=df, aes(x=datetime+u_scaled*60*60, y=max(obs_speed)+1+v_scaled/4,
-            xend=datetime-u_scaled*60*60, yend=max(obs_speed)+1-v_scaled/4), 
-                arrow = arrow(ends="first", length = unit(0.2, "cm")), size = 0.7)
+            ggtitle(sensor) +
+            theme(axis.text.y = element_text(colour = 'darkblue', size=rel(1.5))) + 
+            theme(axis.title.y = element_text(colour = 'darkblue', size=rel(1.5)))
+   
+            p2<-ggplot(df, aes(x=datetime, y=obs_dir)) +
+            geom_point(shape=19, size=1.5, alpha = 1, colour='red') +
+            geom_line(colour='red') +
+            ylab("Direction") +
+            theme(panel.background = element_rect(fill = NA)) + 
+            theme(axis.text.y = element_text(colour = 'red', size=rel(1.5))) + 
+            theme(axis.title.y = element_text(colour = 'red', size=rel(1.5)))
+
+            grid.newpage()
+
+            # extract gtable
+            g1 <- ggplot_gtable(ggplot_build(p1))
+            g2 <- ggplot_gtable(ggplot_build(p2))
+
+            # overlap the panel of 2nd plot on that of 1st plot
+            pp <- c(subset(g1$layout, name == "panel", se = t:r))
+            g <- gtable_add_grob(g1, g2$grobs[[which(g2$layout$name == "panel")]], pp$t, 
+                pp$l, pp$b, pp$l)
+
+            # axis tweaks
+            ia <- which(g2$layout$name == "axis-l")
+            ga <- g2$grobs[[ia]]
+            ax <- ga$children[[2]]
+            ax$widths <- rev(ax$widths)
+            ax$grobs <- rev(ax$grobs)
+            ax$grobs[[1]]$x <- ax$grobs[[1]]$x - unit(1, "npc") + unit(0.15, "cm")
+            g <- gtable_add_cols(g, g2$widths[g2$layout[ia, ]$l], length(g$widths) - 1)
+            g <- gtable_add_grob(g, ax, pp$t, length(g$widths) - 1, pp$b)
+            
+            # draw it
+            grid.draw(g) 
+            return()
+        }
     }
     else{
         print (paste0("Var '",var,"' not recognized. Options are 'speed', 'direciton', or 'both'"))
