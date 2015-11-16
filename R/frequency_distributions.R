@@ -80,6 +80,47 @@ distributionFromTable <- function(v, table){
 }
 
 
+#=======================================================
+#     Bin observed directions
+#=======================================================
+#' @title Bin observed wind directions into 16 bins 
+#' @description
+#' \code{binDirections} returns a vector of binned wind directions
+#' @param v vector of observed wind directions 
+#' @return v a vector of binned wind directions
+#' @export
+#' @details
+#' This function bins a vector of wind directions into 16 bins
+
+binDirections <- function(v){
+
+    binDir<-function(i){    
+        if(i<=11.25){i<-0}
+        else if(i<=33.75){i<-22.5}
+        else if(i<=56.25){i<-45}
+        else if(i<=78.75){i<-67.5}
+        else if(i<=101.25){i<-90}
+        else if(i<=123.75){i<-112.5}
+        else if(i<=146.25){i<-135}
+        else if(i<=168.75){i<-157.5}
+        else if(i<=191.25){i<-180}
+        else if(i<=213.75){i<-202.5}
+        else if(i<=236.25){i<-225}
+        else if(i<=258.75){i<-247.5}
+        else if(i<=281.25){i<-270}
+        else if(i<=303.75){i<-292.5}
+        else if(i<=326.25){i<-315}
+        else if(i<=348.75){i<-337.5}
+        else {i<-0}
+
+        return(i)
+    }
+
+    b<-mapply(binDir, v)
+
+    return(b)
+}
+
 
 
 
