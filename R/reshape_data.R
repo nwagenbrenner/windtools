@@ -393,12 +393,11 @@ binSpeeds <- function(speedVector){
     b <- speedVector
     range <- max(speedVector)
 
-    b1 <- round((0.2 * range), digits = 1)
-    b2 <- round((0.5 * range), digits = 1)
+    b1 <- round((0.3 * range), digits = 1)
+    b2 <- round((0.6 * range), digits = 1)
     b3 <- round((0.9 * range), digits = 1)
     min <- round(min(speedVector), digits = 1)
     max <- round(max(speedVector), digits = 1)
-
     for (i in 1:length(speedVector)){
         if (speedVector[i] < b1){
            b[i] <- paste(min, "-", b1)
@@ -418,5 +417,7 @@ binSpeeds <- function(speedVector){
     b <- factor(b, levels=order)
     return(b) 
 }
+
+
 
 
