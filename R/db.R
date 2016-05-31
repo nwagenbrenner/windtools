@@ -14,8 +14,8 @@
 #' time period.
 
 dbFetchAll <- function(db, start_time, end_time){
-    stopifnot(require(RSQLite()))
-    con <- dbConnect('SQLite', dbname = db)
+    stopifnot(require("RSQLite")
+    con <- dbConnect(SQLite(), dbname = db)
     
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
             "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
@@ -111,7 +111,7 @@ dbFetch <- function(db, query_string){
 dbFetchAvg <- function(db, start_time, end_time, avg_time){
     stopifnot(require("RSQLite"))
     stopifnot(require("plyr"))
-    con <- dbConnect('RSQlite', dbname = db)
+    con <- dbConnect(RSQlite(), dbname = db)
     
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
             "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
