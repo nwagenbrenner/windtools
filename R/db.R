@@ -14,7 +14,7 @@
 #' time period.
 
 dbFetchAll <- function(db, start_time, end_time){
-    stopifnot(require("RSQLite")
+    stopifnot(require("RSQLite"))
     con <- dbConnect(SQLite(), dbname = db)
     
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
