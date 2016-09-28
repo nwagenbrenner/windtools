@@ -4,7 +4,7 @@
 #' @title Convert speed, dir rasters to a vector map
 #' @description
 #' \code{rasterToVectorMap} Converts spd, dir datafame to vector plot in a ggmap object
-#' @param speed raster of wind speeds
+#' @param spd raster of wind speeds
 #' @param dir raster of wind directions (direction wind is coming from; 0-360)
 #' @param lat center lat for ggmap object
 #' @param lon center lon for ggmap object

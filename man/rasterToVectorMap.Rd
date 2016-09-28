@@ -8,6 +8,8 @@ rasterToVectorMap(spd, dir, lat, lon, zoom, maptype, colorscale = "discrete",
   axis_labels = TRUE)
 }
 \arguments{
+\item{spd}{raster of wind speeds}
+
 \item{dir}{raster of wind directions (direction wind is coming from; 0-360)}
 
 \item{lat}{center lat for ggmap object}
@@ -21,8 +23,6 @@ rasterToVectorMap(spd, dir, lat, lon, zoom, maptype, colorscale = "discrete",
 \item{colorscale}{discrete or continuous (default is discrete)}
 
 \item{axis_labels}{TRUE or FALSE (default is TRUE)}
-
-\item{speed}{raster of wind speeds}
 }
 \value{
 ggmap object
