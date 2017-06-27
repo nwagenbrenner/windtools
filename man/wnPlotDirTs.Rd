@@ -22,4 +22,3 @@ ggplot2 object
 \details{
 Plots the wind direction time series faceted on NWP type and model type
 }
-

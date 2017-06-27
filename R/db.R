@@ -92,6 +92,36 @@ dbFetch <- function(db, query_string){
 }
 
 #=======================================================
+#    Fetch all data from multiple sensors
+#=======================================================
+#' @title Fetch all data from multiple sensors for a specified time period
+#' @description
+#' \code{dbFetchMultipleSensors} returns a dataframe from an SQLite database for mulitple 
+#' senosrs for a specified time period
+#' @param db wind database to query
+#' @param sensors list of sensors to extract info for
+#' @param start_time format is '2011-08-15 06:00:00'
+#' @param end_time format is '2011-08-15 06:00:00'
+#' @return dataframe with id, date/time, speed, gust, direction, and quality
+#' @export
+#' @details
+#' This fucntion returns a dataframe of raw, 30-s wind data for 
+#' multiple sensors for a specified time period.
+
+dbFetchMultipleSensors <- function(db, sensors, start_time, end_time){
+    for(s in length(sensors)){
+        d <- dbFetchSensor(db, sensor, start_time, end_time)
+        if(s == 1){
+            master<-d
+        }
+        else{
+            master <- rbind(master, d)
+        }
+    }
+    return(master)
+}
+
+#=======================================================
 #    Fetch averaged data from a wind database
 #=======================================================
 #' @title Fetch averaged data from an SQLite database for a specified time period

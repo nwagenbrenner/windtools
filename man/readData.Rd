@@ -20,4 +20,3 @@ This fucntion reads in a file containing wind data. The input
 file must contain the following data in this order: 
 'identifier', 'lat', 'lon', 'datetime', 'obs_speed', obs_dir'
 }
-

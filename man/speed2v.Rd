@@ -26,4 +26,3 @@ degrees.
 data(wind)
 speed2v(wind$obs_speed[1], wind$obs_dir[1])
 }
-

@@ -21,4 +21,3 @@ wind direction
 This function converts u, v to wind direction
 in degrees.
 }
-

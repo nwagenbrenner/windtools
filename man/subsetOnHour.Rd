@@ -28,4 +28,3 @@ s.avg <- buildHourlyAverages(s)
 h <- c(0, 6, 12, 18)
 s.hr <- subsetOnHour(s.avg, h)
 }
-

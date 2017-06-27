@@ -19,4 +19,3 @@ standard deviation of error
 This fucntion returns the standard deviation of
 error of a vector
 }
-

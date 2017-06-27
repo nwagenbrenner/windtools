@@ -20,4 +20,3 @@ wind speed
 \details{
 This function converts u, v to wind speed.
 }
-

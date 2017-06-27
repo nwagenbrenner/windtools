@@ -33,4 +33,3 @@ This fucntion returns a vector plot of the wind field overlayed on
 a static Google Maps image. The plot is faceted on forecast name. See
 vector_plot.R for usage.
 }
-

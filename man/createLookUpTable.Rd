@@ -23,4 +23,3 @@ dataframe
 This function crates a lookup table of wind directions
 for use in generating wind direction distributions.
 }
-

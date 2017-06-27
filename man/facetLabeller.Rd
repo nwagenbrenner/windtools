@@ -22,4 +22,3 @@ Internal fucntion that returns a new name to use for
 a facet label. Labels are fixed for particular wind
 regimes. This function is called by \code{makeVectorMap}
 }
-

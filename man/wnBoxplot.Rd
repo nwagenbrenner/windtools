@@ -22,4 +22,3 @@ ggplot2 object
 \details{
 Makes box plots for either speed or direction.
 }
-

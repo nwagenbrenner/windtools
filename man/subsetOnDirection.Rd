@@ -29,4 +29,3 @@ direction criteria for a single sensor.
 data(wind)
 s <- subsetOnDireciton(wind, 'R2', 210, 230)
 }
-

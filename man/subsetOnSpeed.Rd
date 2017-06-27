@@ -29,4 +29,3 @@ speed criteria for a single sensor.
 data(wind)
 s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
 }
-

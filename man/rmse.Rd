@@ -19,4 +19,3 @@ root mean squared error
 This fucntion returns the root mean squred
 error of a vector
 }
-

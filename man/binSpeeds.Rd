@@ -23,4 +23,3 @@ for use with \code{makeVectorMap}
 data(wind)
 speed_bracket <- binSpeeds(wind$obs_speed)
 }
-

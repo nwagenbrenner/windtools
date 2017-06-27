@@ -26,4 +26,3 @@ This fucntion returns a dataframe of averaged data for a specified
 time period. The data is averaged at the top of the hour.
 Currently only connects to SQLite db.
 }
-

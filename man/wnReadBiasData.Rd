@@ -24,4 +24,3 @@ file must contain the following data in this order:
 'bias_speed', 'obs_dir', 'pred_dir', 'bias_dir', 'wx_speed', 'wx_bias_speed',
 'wx_dir', 'wx_bias_dir'
 }
-

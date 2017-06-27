@@ -23,4 +23,3 @@ values(r) <- 1:ncell(r)
 extent(r)<-c(-113.5732, -112.4852, 43.04848, 43.81728)
 raster2kml(r, 'test_kml')
 }
-

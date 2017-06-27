@@ -29,4 +29,3 @@ data(wind)
 s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
 s.avg <- buildHourlyAverages(s)
 }
-

@@ -35,4 +35,3 @@ is drawn when the function runs. All other plots are returned as ggplot2 objects
 data(wind)
 plotSensor(wind, 'R26', var='both')
 }
-

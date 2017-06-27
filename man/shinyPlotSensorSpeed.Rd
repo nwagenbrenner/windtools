@@ -19,4 +19,3 @@ ggplot2 object
 This fucntion creates a ggplot2 object of wind speed
 vs. time for a single sensor.
 }
-

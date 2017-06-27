@@ -35,4 +35,3 @@ This function takes two rasters (speed and direction) and converts
 them to a vector plot of wind overlaid on a Google Maps basemap. The
 output is a ggmap object.
 }
-

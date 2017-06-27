@@ -21,4 +21,3 @@ ggplot2 object
 Returns a scatter plot of speed or direction bias vs observed data faceted
 on weather model type.
 }
-

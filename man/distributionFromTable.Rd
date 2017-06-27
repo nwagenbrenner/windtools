@@ -21,4 +21,3 @@ dataframe of wind direction distributions
 This function generates a distribution of wind directions
 based on a lookup table and vector of observed directions.
 }
-

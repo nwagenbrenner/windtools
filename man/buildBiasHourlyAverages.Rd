@@ -25,4 +25,3 @@ It may be most usefule to call this function after other subsetting operations h
 For example, you may want to first subset on speed to filter out
 high-wind event cases to examine diurnal wind patterns.
 }
-

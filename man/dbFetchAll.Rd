@@ -23,4 +23,3 @@ dataframe with id, date/time, speed, gust, direction, and quality
 This fucntion returns a dataframe of raw, 30-s wind data for a specified
 time period.
 }
-

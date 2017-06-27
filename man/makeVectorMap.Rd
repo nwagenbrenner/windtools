@@ -48,4 +48,3 @@ t<-as.POSIXct(strptime("2010-08-16 11:00:00", '\%Y-\%m-\%d \%H:\%M:\%S'))
 s <- subset(wind, subset=(datetime == t))
 m <- makeVectorMap((s, 43.45, -113.15, 12, 'terrain', hourly_averaging=FALSE)
 }
-

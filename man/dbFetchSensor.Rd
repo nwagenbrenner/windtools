@@ -26,4 +26,3 @@ senosr for a specified time period
 This fucntion returns a dataframe of raw, 30-s wind data for a 
 single sensor for a specified time period.
 }
-

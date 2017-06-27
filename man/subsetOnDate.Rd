@@ -28,4 +28,3 @@ data(wind)
 dt <- as.POSIXct(strptime("2010-08-01 00:00:00", '\%Y-\%m-\%d \%H:\%M:\%S'))
 s <- subsetOnDate(wind, '<', dt)
 }
-

@@ -19,4 +19,3 @@ mean absolute error
 This fucntion returns the mean absolute
 error of a vector
 }
-

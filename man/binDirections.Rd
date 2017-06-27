@@ -18,4 +18,3 @@ v a vector of binned wind directions
 \details{
 This function bins a vector of wind directions into 16 bins
 }
-

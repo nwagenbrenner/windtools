@@ -29,4 +29,3 @@ data(wind)
 order <- c(11, 16, 0, 1:10, 12:15, 17:23)
 s <- reorderFactor(wind, hour, order)
 }
-

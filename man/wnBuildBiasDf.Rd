@@ -22,4 +22,3 @@ Combines multiple bias.txt files that have been read in with wnReadBiasData()
 into a single dataframe that can be used with other windtools functions. Note 
 that dfList and nameList must be in the same order.
 }
-

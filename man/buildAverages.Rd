@@ -23,4 +23,3 @@ Data are for each plot averaged over all the entire dataframe.
 data(wind)
 s.avg <- buildAverages(s)
 }
-

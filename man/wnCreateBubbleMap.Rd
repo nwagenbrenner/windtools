@@ -30,4 +30,3 @@ bubbleGoogleMaps object
 Returns a bubble map of wind prediction errors. WindNinja and weather
 model errors are displayed in the same map.
 }
-

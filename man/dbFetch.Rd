@@ -21,4 +21,3 @@ dataframe
 This fucntion returns a dataframe of data returned
 from \code{query_string}
 }
-

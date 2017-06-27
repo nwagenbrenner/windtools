@@ -20,4 +20,3 @@ plotGoogleMaps object
 \details{
 Returns a vector map of observed and predcited winds.
 }
-

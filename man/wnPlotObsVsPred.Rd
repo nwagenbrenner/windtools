@@ -22,4 +22,3 @@ ggplot2 object
 \details{
 Returns a scatter plot of observed vs predicted speed or direction data.
 }
-

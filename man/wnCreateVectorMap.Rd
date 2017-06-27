@@ -44,4 +44,3 @@ h <- c(0, 6, 12, 18)
 s.hr <- subsetOnHour(s.avg, h)
 m <- makeVectorMap(s.hr, 43.45, -113.15, 12, 'terrain')
 }
-
