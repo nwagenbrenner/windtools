@@ -109,10 +109,10 @@ dbFetch <- function(db, query_string){
 #' multiple sensors for a specified time period.
 
 dbFetchMultipleSensors <- function(db, sensors, start_time, end_time){
-    for(s in length(sensors)){
+    for(s in 1:length(sensors)){
         d <- dbFetchSensor(db, sensor, start_time, end_time)
         if(s == 1){
-            master<-d
+            master <- d
         }
         else{
             master <- rbind(master, d)
