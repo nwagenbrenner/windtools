@@ -23,7 +23,7 @@ dbFetchAll <- function(db, start_time, end_time){
             
     res <- dbSendQuery(con, statement = sql)
     d <- fetch(res, n = -1) #fetch all data
-    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'))
+    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'), tz="GMT")
     dbClearResult(res)
     dbDisconnect(con)
     
@@ -58,7 +58,7 @@ dbFetchSensor <- function(db, sensor, start_time, end_time){
             
     res <- dbSendQuery(con, statement = sql)
     d <- fetch(res, n = -1) #fetch all data
-    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'))
+    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'), tz="GMT")
     dbClearResult(res)
     dbDisconnect(con)
     
@@ -151,7 +151,7 @@ dbFetchAvg <- function(db, start_time, end_time, avg_time){
             
     res <- dbSendQuery(con, statement = sql)
     d <- fetch(res, n = -1) #fetch all data
-    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'))
+    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'), tz="GMT")
 
     #compute avgerage at top of hour
     #d <- ?plyr
