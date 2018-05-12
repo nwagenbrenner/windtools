@@ -112,7 +112,7 @@ dbFetch <- function(db, query_string){
 
 dbFetchMultipleSensors <- function(db, sensors, start_time, end_time){
     for(s in 1:length(sensors)){
-        d <- dbFetchSensor(db, sensor, start_time, end_time)
+        d <- dbFetchSensor(db, sensors[s], start_time, end_time)
         if(s == 1){
             master <- d
         }
