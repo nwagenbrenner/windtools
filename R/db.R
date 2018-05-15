@@ -66,31 +66,37 @@ dbFetchSensor <- function(db, sensor, start_time, end_time){
 }
 
 #=======================================================
-#    Generic fetch
+#    Fetch the sensor locations from the database
 #=======================================================
-#' @title Generic fetching function
+#' @title Fetch the location (lat/lon) of one or more sensors
 #' @description
-#' \code{dbFetch} returns a dataframe from an SQLite database
+#' \code{dbFetchSensorLocation} returns the lat/lon of one or more sensors
 #' @param db wind database to query
-#' @param query_string query to submit to database
-#' @return dataframe
+#' @param sensors sensor(s) to extract location for
+#' @return dataframe with sensor id(s), lat, lon
 #' @export
 #' @details
-#' This fucntion returns a dataframe of data returned
-#' from \code{query_string} 
+#' This fucntion returns the lat/lon of one or more sensors
 
-dbFetch <- function(db, query_string){
+dbFetchSensorLocation <- function(db, sensors){
     stopifnot(require("RSQLite"))
     con <- dbConnect(SQLite(), dbname = db)
     
-    sql <- paste0(query_string)
-            
-    res <- dbSendQuery(con, statement = sql)
-    d <- fetch(res, n = -1) #fetch all data
-    dbClearResult(res)
+    for(s in 1:length(sensors)){
+        sql <- paste0("SELECT plot_id, latitude, longitude FROM plot_location ", 
+                "WHERE plot_id ='", sensors[s], "'", collapse="")
+        res <- dbSendQuery(con, statement = sql)
+        d <- fetch(res, n = -1) 
+        dbClearResult(res)
+        if(s == 1){
+            master <- d
+        }
+        else{
+            master <- rbind(master, d)
+        }
+    }
     dbDisconnect(con)
-    
-    return(d)
+    return(master)
 }
 
 #=======================================================
@@ -121,6 +127,34 @@ dbFetchMultipleSensors <- function(db, sensors, start_time, end_time){
         }
     }
     return(master)
+}
+
+#=======================================================
+#    Generic fetch
+#=======================================================
+#' @title Generic fetching function
+#' @description
+#' \code{dbFetch} returns a dataframe from an SQLite database
+#' @param db wind database to query
+#' @param query_string query to submit to database
+#' @return dataframe
+#' @export
+#' @details
+#' This fucntion returns a dataframe of data returned
+#' from \code{query_string} 
+
+dbFetch <- function(db, query_string){
+    stopifnot(require("RSQLite"))
+    con <- dbConnect(SQLite(), dbname = db)
+    
+    sql <- paste0(query_string)
+            
+    res <- dbSendQuery(con, statement = sql)
+    d <- fetch(res, n = -1) #fetch all data
+    dbClearResult(res)
+    dbDisconnect(con)
+    
+    return(d)
 }
 
 #=======================================================
