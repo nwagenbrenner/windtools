@@ -4,7 +4,7 @@
 \alias{dbFetchAvg}
 \title{Fetch averaged data from an SQLite database for a specified time period}
 \usage{
-dbFetchAvg(db, start_time, end_time, avg_time)
+dbFetchAvg(db, start_time, end_time, avg_time, align = "center")
 }
 \arguments{
 \item{db}{database to query}
@@ -14,15 +14,18 @@ dbFetchAvg(db, start_time, end_time, avg_time)
 \item{end_time}{format is '2011-08-15 06:00:00'}
 
 \item{avg_time}{averaging time in minutes}
+
+\item{align}{where to align the index of the result}
 }
 \value{
-dataframe with id, date/time, speed, gust, direction, and quality
+time series of wind speed in xts format
 }
 \description{
 \code{dbFetchAvg} returns a dataframe from an SQLite database for a specified time period
 }
 \details{
 This fucntion returns a dataframe of averaged data for a specified
-time period. The data is averaged at the top of the hour.
-Currently only connects to SQLite db.
+time period. The data is averaged at the top of the hour and aligned
+according to the 'align' parameter. Currently only connects to SQLite db. 
+Speeds are returned in m/s.
 }

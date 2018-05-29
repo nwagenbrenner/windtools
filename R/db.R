@@ -167,17 +167,20 @@ dbFetch <- function(db, query_string){
 #' @param start_time format is '2011-08-15 06:00:00'
 #' @param end_time format is '2011-08-15 06:00:00'
 #' @param avg_time averaging time in minutes
-#' @return dataframe with id, date/time, speed, gust, direction, and quality
+#' @param align where to align the index of the result
+#' @return time series of wind speed in xts format
 #' @export
 #' @details
 #' This fucntion returns a dataframe of averaged data for a specified
-#' time period. The data is averaged at the top of the hour.
-#' Currently only connects to SQLite db. 
+#' time period. The data is averaged at the top of the hour and aligned
+#' according to the 'align' parameter. Currently only connects to SQLite db.
+#' Speeds are returned in m/s.
 
-dbFetchAvg <- function(db, start_time, end_time, avg_time){
+dbFetchAvg <- function(db, start_time, end_time, avg_time, align='center'){
     stopifnot(require("RSQLite"))
     stopifnot(require("plyr"))
-    con <- dbConnect(SQlite(), dbname = db)
+    stopifnot(require("xts"))
+    con <- dbConnect(SQLite(), dbname = db)
     
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
             "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
@@ -185,17 +188,21 @@ dbFetchAvg <- function(db, start_time, end_time, avg_time){
             
     res <- dbSendQuery(con, statement = sql)
     d <- fetch(res, n = -1) #fetch all data
-    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"], '%Y-%m-%d %H:%M:%S'))
+    d[,"Date_time"] <- as.POSIXct(strptime(d[,"Date_time"],
+                           '%Y-%m-%d %H:%M:%S'), tz='America/Denver')
 
     #compute avgerage at top of hour
-    #d <- ?plyr
+    #convert to xts format
+    ts<-xts(d$Wind_speed*0.447, d$Date_time) #*0.447 converts mph->m/s
+
+    #compute a rolling average
+    rAvg<-rollmean(ts, avg_time, align=align)
+    #extract the value from rAvg every hour
+    e<-endpoints(rAvg,on="hours")
+    ee<-rAvg[e]
 
     dbClearResult(res)
     dbDisconnect(con)
     
-    return(d)
+    return(ee)
 }
-
-
-
-
