@@ -175,7 +175,6 @@ dbFetch <- function(db, query_string){
 #' This fucntion returns a dataframe of averaged data for a specified
 #' time period. The data is averaged at the top of the hour and aligned
 #' according to the 'align' parameter. Currently only connects to SQLite db.
-#' Speeds are returned in m/s.
 
 dbFetchAvg <- function(db, sensor, start_time, end_time, avg_time, align='center'){
     stopifnot(require("RSQLite"))
@@ -194,7 +193,8 @@ dbFetchAvg <- function(db, sensor, start_time, end_time, avg_time, align='center
 
     #compute avgerage at top of hour
     #convert to xts format
-    ts<-xts(d$Wind_speed*0.447, d$Date_time) #*0.447 converts mph->m/s
+    #ts<-xts(d$Wind_speed*0.447, d$Date_time) #*0.447 converts mph->m/s
+    ts<-xts(d$Wind_speed, d$Date_time)
 
     #compute a rolling average
     rAvg<-rollmean(ts, avg_time, align=align)

@@ -29,5 +29,4 @@ time series of wind speed in xts format
 This fucntion returns a dataframe of averaged data for a specified
 time period. The data is averaged at the top of the hour and aligned
 according to the 'align' parameter. Currently only connects to SQLite db.
-Speeds are returned in m/s.
 }
