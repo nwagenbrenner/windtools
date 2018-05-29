@@ -164,6 +164,7 @@ dbFetch <- function(db, query_string){
 #' @description
 #' \code{dbFetchAvg} returns a dataframe from an SQLite database for a specified time period
 #' @param db database to query
+#' @param sensor sensor to extract info for
 #' @param start_time format is '2011-08-15 06:00:00'
 #' @param end_time format is '2011-08-15 06:00:00'
 #' @param avg_time averaging time in minutes
@@ -176,7 +177,7 @@ dbFetch <- function(db, query_string){
 #' according to the 'align' parameter. Currently only connects to SQLite db.
 #' Speeds are returned in m/s.
 
-dbFetchAvg <- function(db, start_time, end_time, avg_time, align='center'){
+dbFetchAvg <- function(db, sensor, start_time, end_time, avg_time, align='center'){
     stopifnot(require("RSQLite"))
     stopifnot(require("plyr"))
     stopifnot(require("xts"))
@@ -184,7 +185,7 @@ dbFetchAvg <- function(db, start_time, end_time, avg_time, align='center'){
     
     sql <- paste0("SELECT * FROM mean_flow_obs ", 
             "WHERE Date_time BETWEEN '", start_time, "' ", "AND '", end_time, "' ",
-            "AND Quality='OK'", collapse="")
+            "AND plot_id ='", sensor, "' ", "AND Quality='OK'", collapse="")
             
     res <- dbSendQuery(con, statement = sql)
     d <- fetch(res, n = -1) #fetch all data

@@ -4,10 +4,12 @@
 \alias{dbFetchAvg}
 \title{Fetch averaged data from an SQLite database for a specified time period}
 \usage{
-dbFetchAvg(db, start_time, end_time, avg_time, align = "center")
+dbFetchAvg(db, sensor, start_time, end_time, avg_time, align = "center")
 }
 \arguments{
 \item{db}{database to query}
+
+\item{sensor}{sensor to extract info for}
 
 \item{start_time}{format is '2011-08-15 06:00:00'}
 
@@ -26,6 +28,6 @@ time series of wind speed in xts format
 \details{
 This fucntion returns a dataframe of averaged data for a specified
 time period. The data is averaged at the top of the hour and aligned
-according to the 'align' parameter. Currently only connects to SQLite db. 
+according to the 'align' parameter. Currently only connects to SQLite db.
 Speeds are returned in m/s.
 }
