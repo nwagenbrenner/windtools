@@ -162,21 +162,21 @@ dbFetch <- function(db, query_string){
 #=======================================================
 #' @title Fetch averaged data from an SQLite database for a specified time period
 #' @description
-#' \code{dbFetchAvg} returns a dataframe from an SQLite database for a specified time period
+#' \code{dbFetchHourlyAvg} returns hourly averages from an SQLite database for a specified time period
 #' @param db database to query
 #' @param sensor sensor to extract info for
 #' @param start_time format is '2011-08-15 06:00:00'
 #' @param end_time format is '2011-08-15 06:00:00'
 #' @param avg_time averaging time in minutes
-#' @param align where to align the index of the result
+#' @param align where to align the index of the result (left, middle, right)
 #' @return time series of wind speed in xts format
 #' @export
 #' @details
-#' This fucntion returns a dataframe of averaged data for a specified
+#' This fucntion returns a time series of hourly averaged wind speed data for a specified
 #' time period. The data is averaged at the top of the hour and aligned
 #' according to the 'align' parameter. Currently only connects to SQLite db.
 
-dbFetchAvg <- function(db, sensor, start_time, end_time, avg_time, align='center'){
+dbFetchHourlyAvg <- function(db, sensor, start_time, end_time, avg_time, align='center'){
     stopifnot(require("RSQLite"))
     stopifnot(require("plyr"))
     stopifnot(require("xts"))
