@@ -197,7 +197,8 @@ dbFetchHourlyAvg <- function(db, sensor, start_time, end_time, avg_time, align='
     ts<-xts(d$Wind_speed, d$Date_time)
 
     #compute a rolling average
-    rAvg<-rollmean(ts, avg_time, align=align)
+    #avg_time*2 is integer of rolling window (we have 2 records per minute)
+    rAvg<-rollmean(ts, avg_time*2, align=align)
     #extract the value from rAvg every hour
     e<-endpoints(rAvg,on="hours")
     ee<-rAvg[e]
