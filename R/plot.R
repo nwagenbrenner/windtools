@@ -135,6 +135,8 @@ plotSensor <- function(df, sensor, var="speed", dir_symbol="vector", threshold=N
 #' @param lon center lon of Google Maps image
 #' @param zoom zoom for Google Maps image (1-20)
 #' @param maptype type of Google Maps image (terrain, hybrid, satellite, roadmap)
+#' @param min_time starting hour (0-23, default=0)
+#' @param max_time ending hour (0-23), default=23)
 #' @param colorscale color scale to use for vectors (discrete or continuous)
 #' @param axis_labels whether or not to plot axis labels on map (TRUE or FALSE)
 #' @param scaling_factor controls the size of the wind vectors
@@ -156,13 +158,14 @@ plotSensor <- function(df, sensor, var="speed", dir_symbol="vector", threshold=N
 #' s <- subset(wind, subset=(datetime == t))
 #' m <- makeVectorMap((s, 43.45, -113.15, 12, 'terrain', hourly_averaging=FALSE)
 
-makeVectorMap <- function(df, lat, lon, zoom, maptype, colorscale='discrete',
-                          axis_labels=TRUE, scaling_factor=800.0, hourly_averaging=TRUE){
+makeVectorMap <- function(df, lat, lon, zoom, maptype, min_time=0, max_time=23,
+			  colorscale='discrete', axis_labels=TRUE,
+			  scaling_factor=800.0, hourly_averaging=TRUE){
     stopifnot(require("ggmap"))
     stopifnot(require("grid"))
     
     if(hourly_averaging == TRUE){
-        df<-buildHourlyAverages(df)
+        df<-buildHourlyAverages(df, min_time, max_time)
     }
     else{
         df<-buildAverages(df)

@@ -182,6 +182,8 @@ buildAverages <- function(df){
 #' @description
 #' \code{buildHourlyAverages} returns dataframe with hourly averaged data 
 #' @param df dataframe
+#' @param min_time starting hour, default=o
+#' @param max_time ending hour, default=23
 #' @return dataframe with hourly averages
 #' @export
 #' @details
@@ -198,7 +200,7 @@ buildAverages <- function(df){
 #' s <- subsetOnSpeed(wind, 'R2', '<', 6.0)
 #' s.avg <- buildHourlyAverages(s)
 
-buildHourlyAverages <- function(df){
+buildHourlyAverages <- function(df, min_time=0, max_time=23){
     stopifnot(require("circular"))
 
     obs_dir_radians <- df$obs_dir * pi/180 #convert to radians
@@ -207,7 +209,7 @@ buildHourlyAverages <- function(df){
     hrSpeed<-data.frame(rbind(rep(NA,8)))
     names(hrSpeed)<-c("obs_speed", "obs_dir", "lat", "lon", "plot", "u", "v", "hour")
     
-    for (i in 0:23){
+    for (i in min_time:max_time){
         if(!(i %in% unique(as.POSIXlt(df$datetime)$hour))){
             next
         } 
