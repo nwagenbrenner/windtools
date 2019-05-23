@@ -4,8 +4,9 @@
 \alias{makeVectorMap}
 \title{Make a vector map of the wind field}
 \usage{
-makeVectorMap(df, lat, lon, zoom, maptype, colorscale = "discrete",
-  axis_labels = TRUE, scaling_factor = 800, hourly_averaging = TRUE)
+makeVectorMap(df, lat, lon, zoom, maptype, min_time = 0, max_time = 23,
+  colorscale = "discrete", axis_labels = TRUE, scaling_factor = 800,
+  hourly_averaging = TRUE)
 }
 \arguments{
 \item{df}{dataframe}
@@ -17,6 +18,10 @@ makeVectorMap(df, lat, lon, zoom, maptype, colorscale = "discrete",
 \item{zoom}{zoom for Google Maps image (1-20)}
 
 \item{maptype}{type of Google Maps image (terrain, hybrid, satellite, roadmap)}
+
+\item{min_time}{starting hour (0-23, default=0)}
+
+\item{max_time}{ending hour (0-23), default=23)}
 
 \item{colorscale}{color scale to use for vectors (discrete or continuous)}
 

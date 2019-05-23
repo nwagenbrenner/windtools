@@ -20,6 +20,6 @@ dataframe with id, date/time, speed, gust, direction, and quality
 \code{dbFetchAll} returns a dataframe from an SQLite database for a specified time period
 }
 \details{
-This fucntion returns a dataframe of raw, 30-s wind data for a specified
+This function returns a dataframe of raw, 30-s wind data for a specified
 time period.
 }

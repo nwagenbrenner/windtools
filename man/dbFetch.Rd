@@ -18,6 +18,6 @@ dataframe
 \code{dbFetch} returns a dataframe from an SQLite database
 }
 \details{
-This fucntion returns a dataframe of data returned
+This function returns a dataframe of data returned
 from \code{query_string}
 }

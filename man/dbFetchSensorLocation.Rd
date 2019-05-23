@@ -18,5 +18,5 @@ dataframe with sensor id(s), lat, lon
 \code{dbFetchSensorLocation} returns the lat/lon of one or more sensors
 }
 \details{
-This fucntion returns the lat/lon of one or more sensors
+This function returns the lat/lon of one or more sensors
 }

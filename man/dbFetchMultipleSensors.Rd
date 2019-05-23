@@ -23,6 +23,6 @@ dataframe with id, date/time, speed, gust, direction, and quality
 senosrs for a specified time period
 }
 \details{
-This fucntion returns a dataframe of raw, 30-s wind data for 
+This function returns a dataframe of raw, 30-s wind data for 
 multiple sensors for a specified time period.
 }

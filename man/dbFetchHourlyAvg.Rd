@@ -26,7 +26,7 @@ time series of wind speed in xts format
 \code{dbFetchHourlyAvg} returns hourly averages from an SQLite database for a specified time period
 }
 \details{
-This fucntion returns a time series of hourly averaged wind speed data for a specified
+This function returns a time series of hourly averaged wind speed data for a specified
 time period. The data is averaged at the top of the hour and aligned
 according to the 'align' parameter. Currently only connects to SQLite db.
 }

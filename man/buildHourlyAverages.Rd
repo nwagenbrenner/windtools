@@ -4,10 +4,14 @@
 \alias{buildHourlyAverages}
 \title{Build a dataframe with hourly averaged data}
 \usage{
-buildHourlyAverages(df)
+buildHourlyAverages(df, min_time = 0, max_time = 23)
 }
 \arguments{
 \item{df}{dataframe}
+
+\item{min_time}{starting hour, default=o}
+
+\item{max_time}{ending hour, default=23}
 }
 \value{
 dataframe with hourly averages
